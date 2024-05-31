@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496083214656",
+    "project_id": "mangapp-282c0",
+    "storage_bucket": "mangapp-282c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496083214656:android:2d3943e2620452c7269aa5",
+        "android_client_info": {
+          "package_name": "com.example.mangapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7bJsHwUcyBPmV-iCVbSEvJ0YNlmWuGBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

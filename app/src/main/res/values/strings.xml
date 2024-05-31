@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MangApp</string>
+    <string name="mangapp">MangApp</string>
+    <string name="titulo">Titulo</string>
+    <string name="icon">Icon</string>
+    <string name="send">Send</string>
+</resources>
