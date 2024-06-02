@@ -8,16 +8,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -85,17 +80,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(String email, String pass){
-        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Log.d("EmailPass","signInEmail:Success");
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    updateUI(user);
-                }else{
-                    Log.d("EmailPass","signInEmail:Failure");
-                    Toast.makeText(LoginActivity.this,"Login Failed",Toast.LENGTH_SHORT).show();
-                }
+        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, task -> {
+            if(task.isSuccessful()){
+                Log.d("EmailPass","signInEmail:Success");
+                FirebaseUser user = mAuth.getCurrentUser();
+                updateUI(user);
+            }else{
+                Log.d("EmailPass","signInEmail:Failure");
+                Toast.makeText(LoginActivity.this,"Login Failed",Toast.LENGTH_SHORT).show();
             }
         });
     }
