@@ -1,25 +1,43 @@
 package com.example.mangapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private FirebaseAuth mAuth;
+
     //Declaracion de las variables para los controles usados
     EditText editTextEmail, editTextPassword;
     Button buttonSend;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //Comprobar si el usuario ya esta logeado
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null)updateUI(currentUser);//PoC
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //Iniciar la instancia de FB
+        mAuth = FirebaseAuth.getInstance();
 
         //Asignacion de las variables a los controles
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -61,5 +82,25 @@ public class LoginActivity extends AppCompatActivity {
 
     public static boolean passwordValid(String pass){
         return pass != null && PASSWORD_PATTERN.matcher(pass).matches();
+    }
+
+    public void login(String email, String pass){
+        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Log.d("EmailPass","signInEmail:Success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    updateUI(user);
+                }else{
+                    Log.d("EmailPass","signInEmail:Failure");
+                    Toast.makeText(LoginActivity.this,"Login Failed",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void updateUI(FirebaseUser user){
+
     }
 }
