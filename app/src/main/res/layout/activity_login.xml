@@ -9,7 +9,7 @@
     tools:context=".LoginActivity">
 
     <TextView
-        android:id="@+id/title_textView"
+        android:id="@+id/textViewTitle"
         android:layout_width="233dp"
         android:layout_height="68dp"
         android:contentDescription="@string/title"
@@ -25,7 +25,7 @@
         app:layout_constraintVertical_bias="0.349" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/editTextEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints="Mail"
@@ -45,7 +45,7 @@
         tools:ignore="LabelFor" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/editTextPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints="Password"
@@ -64,7 +64,7 @@
         tools:ignore="LabelFor" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#000000"
@@ -78,7 +78,7 @@
         app:layout_constraintVertical_bias="0.795" />
 
     <TextView
-        android:id="@+id/login_textView"
+        android:id="@+id/textViewLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
@@ -91,7 +91,7 @@
         app:layout_constraintVertical_bias="0.526" />
 
     <ImageView
-        android:id="@+id/title_imageView"
+        android:id="@+id/imageViewTitle"
         android:layout_width="134dp"
         android:layout_height="118dp"
         android:contentDescription="@string/title"
