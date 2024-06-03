@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="5dp">
+
+    <EditText
+        android:id="@+id/userEditText"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:autofillHints=""
+        android:hint="@string/user"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:autofillHints=""
         android:hint="@string/email"
         android:importantForAutofill="no"
@@ -19,7 +30,7 @@
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:hint="@string/password"
         android:importantForAutofill="no"
         android:inputType="textPassword"
@@ -28,7 +39,7 @@
     <Button
         android:id="@+id/signInButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:backgroundTint="#000000"
         android:text="@string/sign_in"
         app:cornerRadius="20dp"
