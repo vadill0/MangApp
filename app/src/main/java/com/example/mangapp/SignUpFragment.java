@@ -7,16 +7,23 @@ import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.Objects;
 
-public class SignInFragment extends DialogFragment {
+public class SignUpFragment extends DialogFragment {
 
+    Button signUpButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_in, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        signUpButton = view.findViewById(R.id.signUpButton);
+
+        signUpButton.setOnClickListener(v -> signUp());
+
+        return view;
     }
 
     @Override
@@ -29,5 +36,9 @@ public class SignInFragment extends DialogFragment {
             int height = getResources().getDimensionPixelSize(R.dimen.dialog_height);
             Objects.requireNonNull(getDialog().getWindow()).setLayout(width, height);
         }
+    }
+
+    public void signUp(){
+
     }
 }

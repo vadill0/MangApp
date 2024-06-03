@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     //Declaracion de las variables para los controles usados
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign_in);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -63,11 +63,12 @@ public class LoginActivity extends AppCompatActivity {
             String password = editTextPassword.getText().toString();
 
             //Control de la entrada
-            if(!emailValid(email)) Toast.makeText(LoginActivity.this,"Invalid Email", Toast.LENGTH_SHORT).show();
-            if(!passwordValid(password))Toast.makeText(LoginActivity.this,"Invalid Password", Toast.LENGTH_SHORT).show();
+            if(!emailValid(email)) Toast.makeText(SignInActivity.this,"Invalid Email", Toast.LENGTH_SHORT).show();
+            if(!passwordValid(password))Toast.makeText(SignInActivity.this,"Invalid Password", Toast.LENGTH_SHORT).show();
+            signIn(email,password);
         });
 
-        textViewSign.setOnClickListener((View v) -> openSignInDialog());
+        textViewSign.setOnClickListener((View v) -> openSignUpDialog());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -89,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         return pass != null && PASSWORD_PATTERN.matcher(pass).matches();
     }
 
-    public void login(String email, String pass){
+    public void signIn(String email, String pass){
         mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, task -> {
             if(task.isSuccessful()){
                 Log.d("EmailPass","signInEmail:Success");
@@ -97,14 +98,14 @@ public class LoginActivity extends AppCompatActivity {
                 updateUI(user);
             }else{
                 Log.d("EmailPass","signInEmail:Failure");
-                Toast.makeText(LoginActivity.this,"Login Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignInActivity.this,"Sign in Failed",Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void openSignInDialog(){
-        SignInFragment signInFragment = new SignInFragment();
-        signInFragment.show(getSupportFragmentManager(),"SignInFragment");
+    private void openSignUpDialog(){
+        SignUpFragment signUpFragment = new SignUpFragment();
+        signUpFragment.show(getSupportFragmentManager(),"SignUpFragment");
     }
 
     public void updateUI(FirebaseUser user){

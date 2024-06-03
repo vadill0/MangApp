@@ -37,7 +37,7 @@
         android:minHeight="48dp" />
 
     <Button
-        android:id="@+id/signInButton"
+        android:id="@+id/signUpButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:backgroundTint="#000000"
