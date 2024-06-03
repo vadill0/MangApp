@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     //Declaracion de las variables para los controles usados
-    TextView textViewSignIn;
+    TextView textViewSign;
     EditText editTextEmail, editTextPassword;
     Button buttonSend;
 
@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonSend = findViewById(R.id.buttonSend);
+        textViewSign = findViewById(R.id.textViewSign);
 
         //Funcion onClick para el boton
         buttonSend.setOnClickListener((View v) -> {
@@ -65,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
             if(!emailValid(email)) Toast.makeText(LoginActivity.this,"Invalid Email", Toast.LENGTH_SHORT).show();
             if(!passwordValid(password))Toast.makeText(LoginActivity.this,"Invalid Password", Toast.LENGTH_SHORT).show();
         });
+
+        textViewSign.setOnClickListener((View v) -> openSignInDialog());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -97,6 +100,11 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,"Login Failed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void openSignInDialog(){
+        SignInFragment signInFragment = new SignInFragment();
+        signInFragment.show(getSupportFragmentManager(),"SignInFragment");
     }
 
     public void updateUI(FirebaseUser user){
