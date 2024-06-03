@@ -1,10 +1,12 @@
 package com.example.mangapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -19,15 +21,15 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
-
     private FirebaseAuth mAuth;
 
     //Declaracion de las variables para los controles usados
+    TextView textViewSignIn;
     EditText editTextEmail, editTextPassword;
     Button buttonSend;
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         //Comprobar si el usuario ya esta logeado
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -63,6 +65,11 @@ public class LoginActivity extends AppCompatActivity {
             if(!emailValid(email)) Toast.makeText(LoginActivity.this,"Invalid Email", Toast.LENGTH_SHORT).show();
             if(!passwordValid(password))Toast.makeText(LoginActivity.this,"Invalid Password", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     public static boolean emailValid(String email){
