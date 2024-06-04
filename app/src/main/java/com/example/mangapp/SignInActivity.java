@@ -24,7 +24,7 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     //Declaracion de las variables para los controles usados
-    TextView textViewSign;
+    TextView textViewSign, textViewForgotPass;
     EditText editTextEmail, editTextPassword;
     Button buttonSend;
 
@@ -55,6 +55,7 @@ public class SignInActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonSend = findViewById(R.id.buttonSend);
         textViewSign = findViewById(R.id.textViewSign);
+        textViewForgotPass = findViewById(R.id.textViewForgotPass);
 
         //Funcion onClick para el boton
         buttonSend.setOnClickListener((View v) -> {
@@ -69,6 +70,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         textViewSign.setOnClickListener((View v) -> openSignUpDialog());
+        textViewForgotPass.setOnClickListener((View v) -> openForgotPassDialog());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -106,6 +108,10 @@ public class SignInActivity extends AppCompatActivity {
     private void openSignUpDialog(){
         SignUpFragment signUpFragment = new SignUpFragment();
         signUpFragment.show(getSupportFragmentManager(),"SignUpFragment");
+    }
+
+    private void openForgotPassDialog(){
+
     }
 
     public void updateUI(FirebaseUser user){
