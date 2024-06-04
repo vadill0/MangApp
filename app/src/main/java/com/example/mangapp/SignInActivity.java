@@ -111,7 +111,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void openForgotPassDialog(){
-
+        ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
+        forgotPasswordFragment.show(getSupportFragmentManager(),"ForgotPasswordFragment");
     }
 
     public void updateUI(FirebaseUser user){
