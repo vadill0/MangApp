@@ -1,27 +1,56 @@
 package com.example.mangapp;
 
+
+
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
 public class SignUpFragment extends DialogFragment {
 
-    Button signUpButton;
+    EditText editTextUser, editTextEmail, editTextPassword;
+    Button buttonSignUp;
+    private FirebaseAuth mAuth;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
-        signUpButton = view.findViewById(R.id.signUpButton);
+        buttonSignUp = view.findViewById(R.id.buttonSignUp);
+        editTextEmail = view.findViewById(R.id.editTextEmailSU);
+        editTextPassword = view.findViewById(R.id.editTextPasswordSU);
+        editTextUser = view.findViewById(R.id.editTextUser);
 
-        signUpButton.setOnClickListener(v -> signUp());
+        mAuth = FirebaseAuth.getInstance();
+
+        buttonSignUp.setOnClickListener(v -> {
+            String email, password;
+            email = editTextEmail.getText().toString();
+            password = editTextPassword.getText().toString();
+
+            if(editTextUser.getText().toString().isEmpty()){
+                Toast.makeText(getActivity(),"Invalid User", Toast.LENGTH_SHORT).show();
+            }else if(SignInActivity.emailValidation(email)){
+                Toast.makeText(getActivity(),"Invalid Email", Toast.LENGTH_SHORT).show();
+            } else if(SignInActivity.passwordValidation(password)) {
+                Toast.makeText(getActivity(),"Invalid Password", Toast.LENGTH_SHORT).show();
+            }else{
+                signUp(email, password);
+            }
+        });
 
         return view;
     }
@@ -38,7 +67,18 @@ public class SignUpFragment extends DialogFragment {
         }
     }
 
-    public void signUp(){
-
+    public void signUp(String email, String password){
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), task -> {
+            if (task.isSuccessful()) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d("SignUpFragment", "createUserWithEmail:success");
+                FirebaseUser user = mAuth.getCurrentUser();
+                Toast.makeText(getActivity(), "Verification email sent", Toast.LENGTH_SHORT).show();
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w("SignUpFragment", "createUserWithEmail:failure", task.getException());
+                Toast.makeText(getActivity(), "Sign up error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

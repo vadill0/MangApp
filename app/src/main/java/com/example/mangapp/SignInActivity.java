@@ -24,7 +24,7 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     //Declaracion de las variables para los controles usados
-    TextView textViewSign, textViewForgotPass;
+    TextView textViewSign, textViewForgotPass, textView;//debug
     EditText editTextEmail, editTextPassword;
     Button buttonSend;
 
@@ -57,6 +57,7 @@ public class SignInActivity extends AppCompatActivity {
         textViewSign = findViewById(R.id.textViewSign);
         textViewForgotPass = findViewById(R.id.textViewForgotPass);
 
+        textView = findViewById(R.id.textView);//debug
         //Funcion onClick para el boton
         buttonSend.setOnClickListener((View v) -> {
             //Recogida de credenciales
@@ -64,9 +65,13 @@ public class SignInActivity extends AppCompatActivity {
             String password = editTextPassword.getText().toString();
 
             //Control de la entrada
-            if(!emailValid(email)) Toast.makeText(SignInActivity.this,"Invalid Email", Toast.LENGTH_SHORT).show();
-            if(!passwordValid(password))Toast.makeText(SignInActivity.this,"Invalid Password", Toast.LENGTH_SHORT).show();
-            signIn(email,password);
+            if(emailValidation(email)){
+                Toast.makeText(SignInActivity.this,"Invalid Email", Toast.LENGTH_SHORT).show();
+            } else if(passwordValidation(password)) {
+                Toast.makeText(SignInActivity.this,"Invalid Password", Toast.LENGTH_SHORT).show();
+            }else{
+                signIn(email, password);
+            }
         });
 
         textViewSign.setOnClickListener((View v) -> openSignUpDialog());
@@ -78,8 +83,8 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    public static boolean emailValid(String email){
-            return email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    public static boolean emailValidation(String email){
+            return email == null || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
@@ -88,8 +93,8 @@ public class SignInActivity extends AppCompatActivity {
                     ".{6,}" +                // minimo 6 caracteres
                     "$");
 
-    public static boolean passwordValid(String pass){
-        return pass != null && PASSWORD_PATTERN.matcher(pass).matches();
+    public static boolean passwordValidation(String pass){
+        return pass == null || !PASSWORD_PATTERN.matcher(pass).matches();
     }
 
     public void signIn(String email, String pass){
@@ -116,6 +121,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void updateUI(FirebaseUser user){
-
+        textView.setText(user.getEmail());//debug
     }
 }
