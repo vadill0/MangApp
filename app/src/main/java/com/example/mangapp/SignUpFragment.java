@@ -21,6 +21,7 @@ import java.util.Objects;
 
 public class SignUpFragment extends DialogFragment {
 
+    private static final String TAG = "SignUpDialogFragment";
     EditText editTextUser, editTextEmail, editTextPassword;
     Button buttonSignUp;
     private FirebaseAuth mAuth;
@@ -71,14 +72,28 @@ public class SignUpFragment extends DialogFragment {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), task -> {
             if (task.isSuccessful()) {
                 // Sign in success, update UI with the signed-in user's information
-                Log.d("SignUpFragment", "createUserWithEmail:success");
+                Log.d(TAG, "createUserWithEmail:success");
                 FirebaseUser user = mAuth.getCurrentUser();
-                Toast.makeText(getActivity(), "Verification email sent", Toast.LENGTH_SHORT).show();
+                sendEmail(user);
             } else {
                 // If sign in fails, display a message to the user.
-                Log.w("SignUpFragment", "createUserWithEmail:failure", task.getException());
+                Log.e(TAG, "createUserWithEmail:failure", task.getException());
                 Toast.makeText(getActivity(), "Sign up error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void sendEmail(FirebaseUser user){
+        if (user != null) {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(requireActivity(), task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Verification email sent", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e(TAG, "sendEmailVerification", task.getException());
+                            Toast.makeText(getActivity(), "Failed to send verification email", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 }
