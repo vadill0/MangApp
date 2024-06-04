@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private static final String TAG = "EmailPass";
 
     //Declaracion de las variables para los controles usados
     TextView textViewSign, textViewForgotPass, textView;//debug
@@ -58,6 +59,7 @@ public class SignInActivity extends AppCompatActivity {
         textViewForgotPass = findViewById(R.id.textViewForgotPass);
 
         textView = findViewById(R.id.textView);//debug
+
         //Funcion onClick para el boton
         buttonSend.setOnClickListener((View v) -> {
             //Recogida de credenciales
@@ -100,12 +102,18 @@ public class SignInActivity extends AppCompatActivity {
     public void signIn(String email, String pass){
         mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this, task -> {
             if(task.isSuccessful()){
-                Log.d("EmailPass","signInEmail:Success");
+                Log.d(TAG,"signInEmail:Success");
                 FirebaseUser user = mAuth.getCurrentUser();
-                updateUI(user);
+                if(user != null && user.isEmailVerified()){
+                    Toast.makeText(SignInActivity.this,"Sign in successful",Toast.LENGTH_SHORT).show();
+                    updateUI(user);
+                }else{
+                    Toast.makeText(SignInActivity.this,"You need to verify your email to sign in",Toast.LENGTH_SHORT).show();
+                    FirebaseAuth.getInstance().signOut();
+                }
             }else{
-                Log.d("EmailPass","signInEmail:Failure");
-                Toast.makeText(SignInActivity.this,"Sign in Failed",Toast.LENGTH_SHORT).show();
+                Log.d(TAG,"signInEmail:Failure");
+                Toast.makeText(SignInActivity.this,"Sign in failed",Toast.LENGTH_SHORT).show();
             }
         });
     }
