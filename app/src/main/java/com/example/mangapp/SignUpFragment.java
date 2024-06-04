@@ -75,6 +75,7 @@ public class SignUpFragment extends DialogFragment {
                 Log.d(TAG, "createUserWithEmail:success");
                 FirebaseUser user = mAuth.getCurrentUser();
                 sendEmail(user);
+                FirebaseAuth.getInstance().signOut();
             } else {
                 // If sign in fails, display a message to the user.
                 Log.e(TAG, "createUserWithEmail:failure", task.getException());
