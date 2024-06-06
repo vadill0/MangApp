@@ -10,10 +10,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,11 +28,13 @@ import java.util.regex.Pattern;
 public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final String TAG = "EmailPass";
+    View[] mainViews; //Views de la Activity
+    View fragmentContainer; //Frame container
 
     //Declaracion de las variables para los controles usados
     TextView textViewSign, textViewForgotPass, textView;//debug
     EditText editTextEmail, editTextPassword;
-    Button buttonSend;
+    Button buttonSend, buttonGoogle;
 
     @Override
     protected void onStart() {
@@ -52,11 +59,20 @@ public class SignInActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         //Asignacion de las variables a los controles
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonSend = findViewById(R.id.buttonSend);
+        fragmentContainer = findViewById(R.id.fragment_container);
+        editTextEmail = findViewById(R.id.editTextEmailSignIn);
+        editTextPassword = findViewById(R.id.editTextPasswordSignIn);
+        buttonSend = findViewById(R.id.buttonSignIn);
         textViewSign = findViewById(R.id.textViewSign);
+        buttonGoogle = findViewById(R.id.buttonGoogle);
         textViewForgotPass = findViewById(R.id.textViewForgotPass);
+
+        //Views de la main activity
+        mainViews = new View[]{editTextEmail, editTextPassword,
+                buttonSend, buttonGoogle,
+                textViewSign, textViewForgotPass
+        };
+
 
         textView = findViewById(R.id.textView);//debug
 
@@ -76,8 +92,33 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        textViewSign.setOnClickListener((View v) -> openSignUpDialog());
-        textViewForgotPass.setOnClickListener((View v) -> openForgotPassDialog());
+        textViewSign.setOnClickListener((View v) -> openSignUpFragment());
+        textViewForgotPass.setOnClickListener((View v) -> openForgotPassFragment());
+
+        //Ocultacion de botones de la activity en los fragments
+        OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
+        onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fm = getSupportFragmentManager();
+                if (fm.getBackStackEntryCount() > 1) {
+                    fm.popBackStack();
+                } else {
+                    // Show all views again when no fragment is in the stack
+                    for (View view : mainViews) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                    fragmentContainer.setVisibility(View.GONE);
+                    if (fm.getBackStackEntryCount() > 0) {
+                        fm.popBackStack();
+                    } else {
+                        // Remove the callback to allow default back press handling
+                        setEnabled(false);
+                        onBackPressedDispatcher.onBackPressed();
+                    }
+                }
+            }
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,14 +159,35 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    private void openSignUpDialog(){
-        SignUpFragment signUpFragment = new SignUpFragment();
-        signUpFragment.show(getSupportFragmentManager(),"SignUpFragment");
+
+    //Carga y ocultacion de los fragment
+    private void loadFragment(Fragment fragment) {
+        // Hide all views except the fragment container
+        for (View view : mainViews) {
+            view.setVisibility(View.GONE);
+        }
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        // Create a FragmentManager
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Create a FragmentTransaction to begin the transaction and replace the Fragment
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Replace the FrameLayout with new Fragment
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+
+        // Commit the transaction
+        fragmentTransaction.commit();
     }
 
-    private void openForgotPassDialog(){
-        ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
-        forgotPasswordFragment.show(getSupportFragmentManager(),"ForgotPasswordFragment");
+    private void openSignUpFragment(){
+        loadFragment(new SignUpFragment());
+    }
+
+    private void openForgotPassFragment(){
+        loadFragment(new ForgotPasswordFragment());
     }
 
     public void updateUI(FirebaseUser user){

@@ -1,46 +1,45 @@
 package com.example.mangapp;
 
-
-
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Objects;
-
-public class SignUpFragment extends DialogFragment {
+public class SignUpFragment extends Fragment {
 
     private static final String TAG = "SignUpDialogFragment";
-    EditText editTextUser, editTextEmail, editTextPassword;
+    EditText editTextUser, editTextEmailRecovery, editTextPassword, editTextPasswordVerify;
+    ImageView imageViewReturn;
     Button buttonSignUp;
     private FirebaseAuth mAuth;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
         buttonSignUp = view.findViewById(R.id.buttonSignUp);
-        editTextEmail = view.findViewById(R.id.editTextEmailSU);
+        editTextEmailRecovery = view.findViewById(R.id.editTextEmailSU);
         editTextPassword = view.findViewById(R.id.editTextPasswordSU);
         editTextUser = view.findViewById(R.id.editTextUser);
+        editTextPasswordVerify = view.findViewById(R.id.editTextPasswordVerifySU);
+        imageViewReturn = view.findViewById(R.id.imageViewReturn);
 
         mAuth = FirebaseAuth.getInstance();
 
         buttonSignUp.setOnClickListener(v -> {
-            String email, password;
-            email = editTextEmail.getText().toString();
+            String email, password, passwordVerify;
+            email = editTextEmailRecovery.getText().toString();
             password = editTextPassword.getText().toString();
+            passwordVerify = editTextPasswordVerify.getText().toString();
 
             if(editTextUser.getText().toString().isEmpty()){
                 Toast.makeText(getActivity(),"Invalid User", Toast.LENGTH_SHORT).show();
@@ -48,24 +47,20 @@ public class SignUpFragment extends DialogFragment {
                 Toast.makeText(getActivity(),"Invalid Email", Toast.LENGTH_SHORT).show();
             } else if(SignInActivity.passwordValidation(password)) {
                 Toast.makeText(getActivity(),"Invalid Password", Toast.LENGTH_SHORT).show();
-            }else{
+            } else if (!passwordVerify.equals(password)) {
+                Toast.makeText(getActivity(),"The passwords don't match", Toast.LENGTH_SHORT).show();
+            } else{
                 signUp(email, password);
             }
         });
 
+        imageViewReturn.setOnClickListener(v -> {
+            if(getActivity() != null){
+                getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        });
+
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Set the dialog size
-        if (getDialog() != null) {
-            int width = getResources().getDimensionPixelSize(R.dimen.dialog_width);
-            int height = getResources().getDimensionPixelSize(R.dimen.dialog_height);
-            Objects.requireNonNull(getDialog().getWindow()).setLayout(width, height);
-        }
     }
 
     public void signUp(String email, String password){

@@ -2,7 +2,7 @@ package com.example.mangapp;
 
 import android.os.Bundle;
 
-import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +15,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Objects;
-
-public class ForgotPasswordFragment extends DialogFragment {
+public class ForgotPasswordFragment extends Fragment {
 
     private static final String TAG = "PasswordRecovery";
     private FirebaseAuth mAuth;
@@ -44,18 +42,6 @@ public class ForgotPasswordFragment extends DialogFragment {
         });
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // Set the dialog size
-        if (getDialog() != null) {
-            int width = getResources().getDimensionPixelSize(R.dimen.FPdialog_width);
-            int height = getResources().getDimensionPixelSize(R.dimen.FPdialog_height);
-            Objects.requireNonNull(getDialog().getWindow()).setLayout(width, height);
-        }
     }
 
     public void sendRecoveryEMail(String email){

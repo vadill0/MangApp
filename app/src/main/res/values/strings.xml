@@ -17,4 +17,6 @@
     <string name="sign_up">Sign Up</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="send_recovery">Send Recovery</string>
+    <string name="password_recovery">Password recovery</string>
+    <string name="goback">goBack</string>
 </resources>
