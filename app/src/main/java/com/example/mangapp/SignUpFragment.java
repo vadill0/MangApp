@@ -55,8 +55,13 @@ public class SignUpFragment extends Fragment {
         });
 
         imageViewReturn.setOnClickListener(v -> {
-            if(getActivity() != null){
-                getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            if (getActivity() != null) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                if (fragmentManager.getBackStackEntryCount() > 1) {
+                    fragmentManager.popBackStack();
+                } else {
+                    getActivity().onBackPressed();
+                }
             }
         });
 
