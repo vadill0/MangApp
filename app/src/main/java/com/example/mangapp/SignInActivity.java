@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.auth.api.identity.SignInClient;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,7 +29,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Objects;
@@ -110,9 +109,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-        buttonGoogle.setOnClickListener((View v)->{
-            signInWithGoogle();
-        });
+        buttonGoogle.setOnClickListener((View v)-> signInWithGoogle());
 
         textViewSign.setOnClickListener((View v) -> openSignUpFragment());
         textViewForgotPass.setOnClickListener((View v) -> openForgotPassFragment());
@@ -167,7 +164,7 @@ public class SignInActivity extends AppCompatActivity {
                     updateUI(user);
                 }else{
                     Toast.makeText(SignInActivity.this,"You need to verify your email to sign in",Toast.LENGTH_SHORT).show();
-                    FirebaseAuth.getInstance().signOut();
+                    openEmailVerificationFragment(user);
                 }
             }else{
                 Log.d(TAG,"signInEmail:Failure");
@@ -238,6 +235,10 @@ public class SignInActivity extends AppCompatActivity {
 
     private void openForgotPassFragment(){
         loadFragment(new ForgotPasswordFragment());
+    }
+
+    private void openEmailVerificationFragment(FirebaseUser user){
+        loadFragment(new EmailVerificationFragment(user));
     }
 
     public void updateUI(FirebaseUser user){
