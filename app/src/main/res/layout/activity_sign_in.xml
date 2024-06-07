@@ -95,6 +95,7 @@
         android:layout_width="212dp"
         android:layout_height="54dp"
         android:backgroundTint="#FFFFFF"
+        android:drawableLeft="@drawable/googleg_disabled_color_18"
         android:text="@string/sign_in_with_google"
         android:textColor="#000000"
         app:cornerRadius="20dp"
@@ -104,7 +105,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.802"
-        tools:ignore="TextSizeCheck" />
+        tools:ignore="RtlHardcoded,TextSizeCheck" />
 
     <ImageView
         android:id="@+id/imageViewTitle"
@@ -165,7 +166,9 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
