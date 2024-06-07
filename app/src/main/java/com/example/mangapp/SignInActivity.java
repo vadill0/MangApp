@@ -34,7 +34,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements SignUpFragment.OnEmailVerificationRequestedListener{
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
     private static final int RC_SIGN_IN = 9001;
@@ -239,6 +239,15 @@ public class SignInActivity extends AppCompatActivity {
 
     private void openEmailVerificationFragment(FirebaseUser user){
         loadFragment(new EmailVerificationFragment(user));
+    }
+
+    @Override
+    public void onEmailVerificationRequested() {
+        // Perform fragment transaction to open the email verification fragment
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new EmailVerificationFragment(mAuth.getCurrentUser()))
+                .addToBackStack(null)
+                .commit();
     }
 
     public void updateUI(FirebaseUser user){

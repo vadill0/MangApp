@@ -1,8 +1,10 @@
 package com.example.mangapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class SignUpFragment extends Fragment {
 
     private static final String TAG = "SignUpDialogFragment";
+    TextView textViewVerificationNotSent;
     EditText editTextUser, editTextEmailRecovery, editTextPassword, editTextPasswordVerify;
     ImageView imageViewReturn;
     Button buttonSignUp;
@@ -34,6 +38,7 @@ public class SignUpFragment extends Fragment {
         editTextUser = view.findViewById(R.id.editTextUser);
         editTextPasswordVerify = view.findViewById(R.id.editTextPasswordVerifySU);
         imageViewReturn = view.findViewById(R.id.imageViewReturn);
+        textViewVerificationNotSent = view.findViewById(R.id.textViewVerificationNotSent);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -55,6 +60,8 @@ public class SignUpFragment extends Fragment {
                 signUp(email, password);
             }
         });
+
+        textViewVerificationNotSent.setOnClickListener((View v) -> requestEmailVerification());
 
         imageViewReturn.setOnClickListener(v -> {
             if (getActivity() != null) {
@@ -109,6 +116,29 @@ public class SignUpFragment extends Fragment {
                             Toast.makeText(getActivity(), "Failed to send verification email", Toast.LENGTH_SHORT).show();
                         }
                     });
+        }
+    }
+
+    public interface OnEmailVerificationRequestedListener {
+        void onEmailVerificationRequested();
+    }
+
+    private OnEmailVerificationRequestedListener mListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnEmailVerificationRequestedListener) {
+            mListener = (OnEmailVerificationRequestedListener) context;
+        } else {
+            throw new RuntimeException(context + " must implement OnEmailVerificationRequestedListener");
+        }
+    }
+
+    // Call this method when you want to open the email verification fragment
+    private void requestEmailVerification() {
+        if (mListener != null) {
+            mListener.onEmailVerificationRequested();
         }
     }
 }
