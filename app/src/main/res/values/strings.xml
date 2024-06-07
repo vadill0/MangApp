@@ -19,4 +19,6 @@
     <string name="send_recovery">Send Recovery</string>
     <string name="password_recovery">Password recovery</string>
     <string name="goback">goBack</string>
+    <string name="verification_email">Verification email</string>
+    <string name="send_verification">Send verification</string>
 </resources>
