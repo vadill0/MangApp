@@ -20,13 +20,25 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private GoogleSignInClient googleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "EmailPass";
     View[] mainViews; //Views de la Activity
     View fragmentContainer; //Frame container
@@ -57,6 +69,12 @@ public class SignInActivity extends AppCompatActivity {
 
         //Iniciar la instancia de FB
         mAuth = FirebaseAuth.getInstance();
+
+        //Configuracion Google SignIn
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail().build();
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         //Asignacion de las variables a los controles
         fragmentContainer = findViewById(R.id.fragment_container);
@@ -92,6 +110,10 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        buttonGoogle.setOnClickListener((View v)->{
+            signInWithGoogle();
+        });
+
         textViewSign.setOnClickListener((View v) -> openSignUpFragment());
         textViewForgotPass.setOnClickListener((View v) -> openForgotPassFragment());
 
@@ -119,11 +141,6 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     public static boolean emailValidation(String email){
@@ -157,6 +174,39 @@ public class SignInActivity extends AppCompatActivity {
                 Toast.makeText(SignInActivity.this,"Sign in failed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void signInWithGoogle(){
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RC_SIGN_IN){
+            try {
+                GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data)
+                        .getResult(ApiException.class);
+                fbAuthWithGoogle(account.getIdToken());
+            }catch (ApiException e){
+                Log.e(TAG,"Google sign in failed", e);
+            }
+        }
+    }
+
+    private void fbAuthWithGoogle(String idToken){
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if(task.isSuccessful()){
+                        Log.d(TAG,"signInWithCredential:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(Objects.requireNonNull(user));
+                    }else{
+                        Log.e(TAG,"signInWithCredential:failure",task.getException());
+                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
