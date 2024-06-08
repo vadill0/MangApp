@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
+import com.example.mangapp.MainActivity;
 import com.example.mangapp.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -47,6 +48,7 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
     TextView textViewSign, textViewForgotPass, textView;//debug
     EditText editTextEmail, editTextPassword;
     Button buttonSend, buttonGoogle;
+    Intent intent;
 
     @Override
     protected void onStart() {
@@ -252,6 +254,10 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
     }
 
     public void updateUI(FirebaseUser user){
-        textView.setText(user.getEmail());//debug
+        if(user != null){
+            intent = new Intent(SignInActivity.this, MainActivity.class);
+            intent.putExtra("FirebaseUser", user.getUid());
+            startActivity(intent);
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.mangapp.ApiResponse;
 
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class Data {
@@ -39,5 +41,16 @@ public class Data {
 
     public void setRelationships(List<Relationship> relationships) {
         this.relationships = relationships;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Data{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", attributes=" + attributes +
+                ", relationships=" + relationships +
+                '}';
     }
 }

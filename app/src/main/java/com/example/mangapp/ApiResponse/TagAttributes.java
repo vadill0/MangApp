@@ -1,5 +1,7 @@
 package com.example.mangapp.ApiResponse;
 
+import androidx.annotation.NonNull;
+
 import java.util.Map;
 
 public class TagAttributes {
@@ -40,5 +42,16 @@ public class TagAttributes {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "TagAttributes{" +
+                "name=" + name +
+                ", description=" + description +
+                ", group='" + group + '\'' +
+                ", version=" + version +
+                '}';
     }
 }

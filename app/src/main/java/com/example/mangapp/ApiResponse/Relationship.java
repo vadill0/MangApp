@@ -1,5 +1,7 @@
 package com.example.mangapp.ApiResponse;
 
+import androidx.annotation.NonNull;
+
 public class Relationship {
     private String id;
     private String type;
@@ -38,5 +40,16 @@ public class Relationship {
 
     public void setAttributes(Object attributes) {
         this.attributes = attributes;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Relationship{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", related='" + related + '\'' +
+                ", attributes=" + attributes +
+                '}';
     }
 }

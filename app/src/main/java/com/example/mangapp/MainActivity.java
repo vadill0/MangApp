@@ -1,5 +1,6 @@
 package com.example.mangapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -11,6 +12,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mangapp.ApiResponse.ResponseModelMangaList;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Recibo el id del user de SignInActivity
+        Intent intent = getIntent();
+        String fbUser = intent.getStringExtra("FirebaseUser");
+
         textView = findViewById(R.id.textView2);
 
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
@@ -41,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ResponseModelMangaList> call, @NonNull Response<ResponseModelMangaList> response) {
                 if (response.isSuccessful()) {
                     ResponseModelMangaList responseModel = response.body();
-                    textView.setText(responseModel.toString());
+                    textView.setText(Objects.requireNonNull(responseModel).toString());
                 } else {
                     // Handle the error
                 }
