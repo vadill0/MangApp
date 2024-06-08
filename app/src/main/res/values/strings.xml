@@ -22,4 +22,5 @@
     <string name="verification_email">Verification email</string>
     <string name="send_verification">Send verification</string>
     <string name="verification_not_received">I haven\'t received the verification email</string>
+    <string name="pfp">Profile picture</string>
 </resources>

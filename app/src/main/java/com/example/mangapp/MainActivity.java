@@ -1,7 +1,7 @@
 package com.example.mangapp;
 
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -14,7 +14,7 @@ import com.example.mangapp.ApiResponse.ResponseModelMangaList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Objects;
+
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,8 +22,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textView;
     private FirebaseAuth mAuth;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,27 +38,32 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
 
-        textView = findViewById(R.id.textView2);
-//        Ejemplo de llamada a la API
-//        ApiService apiService = ApiClient.getClient().create(ApiService.class);
-//        Call<ResponseModelMangaList> call = apiService.getMangaList("One Piece");
-//
-//        call.enqueue(new Callback<ResponseModelMangaList>() {
-//            @Override
-//            public void onResponse(@NonNull Call<ResponseModelMangaList> call, @NonNull Response<ResponseModelMangaList> response) {
-//                if (response.isSuccessful()) {
-//                    ResponseModelMangaList responseModel = response.body();
-//                    textView.setText(Objects.requireNonNull(responseModel).toString());
-//                } else {
-//                    // Handle the error
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<ResponseModelMangaList> call, @NonNull Throwable t) {
-//                // Handle the failure
-//            }
-//        });
+        searchView = findViewById(R.id.searchView);
 
+
+
+
+    }
+    private void getMangaList(String filter){
+        //Ejemplo de llamada a la API
+
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<ResponseModelMangaList> call = apiService.getMangaList(filter);
+
+        call.enqueue(new Callback<ResponseModelMangaList>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseModelMangaList> call, @NonNull Response<ResponseModelMangaList> response) {
+                if (response.isSuccessful()) {
+                    ResponseModelMangaList responseModel = response.body();
+                } else {
+                    // Handle the error
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseModelMangaList> call, @NonNull Throwable t) {
+                // Handle the failure
+            }
+        });
     }
 }
