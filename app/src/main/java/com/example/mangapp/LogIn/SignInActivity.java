@@ -256,7 +256,6 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
     public void updateUI(FirebaseUser user){
         if(user != null){
             intent = new Intent(SignInActivity.this, MainActivity.class);
-            intent.putExtra("FirebaseUser", user.getUid());
             startActivity(intent);
         }
     }
