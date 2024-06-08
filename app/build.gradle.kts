@@ -43,6 +43,7 @@ dependencies {
     implementation (libs.retrofit2.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
+    implementation (libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

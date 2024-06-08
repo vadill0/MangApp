@@ -18,8 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mangapp.R;
+import com.example.mangapp.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpFragment extends Fragment {
 
@@ -29,6 +32,7 @@ public class SignUpFragment extends Fragment {
     ImageView imageViewReturn;
     Button buttonSignUp;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,9 +47,11 @@ public class SignUpFragment extends Fragment {
         textViewVerificationNotSent = view.findViewById(R.id.textViewVerificationNotSent);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         buttonSignUp.setOnClickListener(v -> {
-            String email, password, passwordVerify;
+            String username, email, password, passwordVerify;
+            username = editTextUser.getText().toString();
             email = editTextEmailRecovery.getText().toString();
             password = editTextPassword.getText().toString();
             passwordVerify = editTextPasswordVerify.getText().toString();
@@ -59,7 +65,7 @@ public class SignUpFragment extends Fragment {
             } else if (!passwordVerify.equals(password)) {
                 Toast.makeText(getActivity(),"The passwords don't match", Toast.LENGTH_SHORT).show();
             } else{
-                signUp(email, password);
+                signUp(username, email, password);
             }
         });
 
@@ -91,14 +97,17 @@ public class SignUpFragment extends Fragment {
         return view;
     }
 
-    public void signUp(String email, String password){
+    public void signUp(String username, String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(requireActivity(), task -> {
             if (task.isSuccessful()) {
                 // Sign in success, update UI with the signed-in user's information
                 Log.d(TAG, "createUserWithEmail:success");
                 FirebaseUser user = mAuth.getCurrentUser();
-                sendEmail(user);
-                FirebaseAuth.getInstance().signOut();
+                if (user != null) {
+                    saveUserData(user.getUid(), username);
+                    sendEmail(user);
+                    FirebaseAuth.getInstance().signOut();
+                }
             } else {
                 // If sign in fails, display a message to the user.
                 Log.e(TAG, "createUserWithEmail:failure", task.getException());
@@ -142,5 +151,20 @@ public class SignUpFragment extends Fragment {
         if (mListener != null) {
             mListener.onEmailVerificationRequested();
         }
+    }
+
+    private void saveUserData(String userId, String username){
+        User user = new User(userId, username);
+
+        mDatabase.child("users").child(userId).setValue(user)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "User data saved successfully");
+                        Toast.makeText(getActivity(), "User registered successfully.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.w(TAG, "Failed to save user data", task.getException());
+                        Toast.makeText(getActivity(), "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
