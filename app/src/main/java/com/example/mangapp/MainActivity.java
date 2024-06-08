@@ -1,6 +1,7 @@
 package com.example.mangapp;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        textView = findViewById(R.id.textView2);
+
         ApiService apiService = ApiClient.getClient().create(ApiService.class);
         Call<ResponseModelMangaList> call = apiService.getMangaList("One Piece");
 
@@ -36,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ResponseModelMangaList> call, @NonNull Response<ResponseModelMangaList> response) {
                 if (response.isSuccessful()) {
                     ResponseModelMangaList responseModel = response.body();
-                    // Handle the response
+                    textView.setText(responseModel.toString());
                 } else {
                     // Handle the error
                 }

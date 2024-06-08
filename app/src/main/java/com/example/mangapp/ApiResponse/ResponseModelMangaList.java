@@ -57,5 +57,17 @@ public class ResponseModelMangaList {
     public void setTotal(int total) {
         this.total = total;
     }
+
+    @Override
+    public String toString() {
+        return "ResponseModelMangaList{" +
+                "result='" + result + '\'' +
+                ", response='" + response + '\'' +
+                ", data=" + data +
+                ", limit=" + limit +
+                ", offset=" + offset +
+                ", total=" + total +
+                '}';
+    }
 }
 

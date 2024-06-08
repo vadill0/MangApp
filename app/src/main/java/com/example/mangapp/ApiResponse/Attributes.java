@@ -1,5 +1,7 @@
 package com.example.mangapp.ApiResponse;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -186,5 +188,32 @@ public class Attributes {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Attributes{" +
+                "title=" + title +
+                ", altTitles=" + altTitles +
+                ", description=" + description +
+                ", isLocked=" + isLocked +
+                ", links=" + links +
+                ", originalLanguage='" + originalLanguage + '\'' +
+                ", lastVolume='" + lastVolume + '\'' +
+                ", lastChapter='" + lastChapter + '\'' +
+                ", publicationDemographic='" + publicationDemographic + '\'' +
+                ", status='" + status + '\'' +
+                ", year=" + year +
+                ", contentRating='" + contentRating + '\'' +
+                ", chapterNumbersResetOnNewVolume=" + chapterNumbersResetOnNewVolume +
+                ", availableTranslatedLanguages=" + availableTranslatedLanguages +
+                ", latestUploadedChapter='" + latestUploadedChapter + '\'' +
+                ", tags=" + tags +
+                ", state='" + state + '\'' +
+                ", version=" + version +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                '}';
     }
 }
