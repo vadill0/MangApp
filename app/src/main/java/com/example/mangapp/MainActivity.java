@@ -5,7 +5,6 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,7 +12,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mangapp.ApiResponse.Data;
+import com.example.mangapp.ApiResponse.CoverImageResponseModel;
+import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.ResponseModelMangaList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private MangaAdapter mangaAdapter;
     private RecyclerView recyclerView;
 
-    private List<Data> mangaList = new ArrayList<>();
+    private List<MangaData> mangaList = new ArrayList<>();
     SearchView searchView;
 
     @Override
@@ -55,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mangaAdapter = new MangaAdapter(mangaList);
+        mangaAdapter = new MangaAdapter(this,mangaList);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getMangaList(query);
+                apiService.getMangaList(query);
                 return false;
             }
 
@@ -72,10 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void getMangaList(String filter) {
-        //Ejemplo de llamada a la API
 
-        Call<ResponseModelMangaList> call = apiService.getMangaList(filter);
+    private void searchManga(String query) {
+        Call<ResponseModelMangaList> call = apiService.getMangaList(query);
         call.enqueue(new Callback<ResponseModelMangaList>() {
             @Override
             public void onResponse(Call<ResponseModelMangaList> call, Response<ResponseModelMangaList> response) {
@@ -83,14 +82,36 @@ public class MainActivity extends AppCompatActivity {
                     mangaList.clear();
                     mangaList.addAll(response.body().getData());
                     mangaAdapter.notifyDataSetChanged();
+                    //fetchCoverImages();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseModelMangaList> call, Throwable t) {
                 // Handle failure
-                Toast.makeText(MainActivity.this,"API response failed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+//    private void fetchCoverImages() {
+//        for (MangaData manga : mangaList) {
+//            Call<CoverImageResponseModel> call = apiService.getCoverImage(manga.getId());
+//            call.enqueue(new Callback<CoverImageResponseModel>() {
+//                @Override
+//                public void onResponse(Call<CoverImageResponseModel> call, Response<CoverImageResponseModel> response) {
+//                    if (response.isSuccessful() && response.body() != null) {
+//                        String fileName = response.body().getData().getAttributes().getFileName();
+//                        String imageUrl = ApiClient.BASE_URL + fileName;
+//                        manga.setCoverImageUrl(imageUrl);
+//                        mangaAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<CoverImageResponseModel> call, Throwable t) {
+//                    // Handle failure
+//                }
+//            });
+//        }
     }
 }

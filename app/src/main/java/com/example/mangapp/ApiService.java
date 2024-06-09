@@ -1,5 +1,6 @@
 package com.example.mangapp;
 
+import com.example.mangapp.ApiResponse.CoverImageResponseModel;
 import com.example.mangapp.ApiResponse.ResponseModelMangaList;
 
 
@@ -20,7 +21,6 @@ public interface ApiService {
     Call<ResponseModelMangaList> getMangaList(@Query("title") String title,
                                               @Query("limit") int number);
 
-
-//    @GET("cover/{mangaOrCoverId}")
-//    Call<> getCover(@Path("id") String id);
+    @GET("cover/{mangaOrCoverId}")
+    Call<CoverImageResponseModel> getCover(@Path("id") String id);
 }

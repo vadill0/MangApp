@@ -2,57 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:background="@drawable/rectangular_background">
-
-    <!-- Placeholder image -->
-
-    <ImageView
-        android:id="@+id/mangaCover"
-        android:layout_width="126dp"
-        android:layout_height="134dp"
-        android:contentDescription="Cover Image"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background" />
+    android:padding="8dp">
 
     <TextView
-        android:id="@+id/mangaTitle"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/mangaCover"
-        android:layout_marginStart="16dp"
-        android:layout_alignParentTop="true"
+        android:text="Manga Title"
         android:textSize="18sp"
         android:textColor="@android:color/black"
-        android:text="Manga Title" /> <!-- Placeholder text -->
+        android:layout_marginBottom="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"/>
+
+    <ImageView
+        android:id="@+id/coverImage"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/cover_image"
+        android:layout_below="@id/title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true" />
 
     <LinearLayout
-        android:layout_width="310dp"
-        android:layout_height="749dp"
-        android:layout_below="@id/mangaTitle"
-        android:layout_marginStart="138dp"
-        android:layout_marginTop="-32dp"
-        android:layout_toEndOf="@id/mangaCover"
-        android:orientation="horizontal">
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/coverImage">
 
-        <Button
+        <ImageView
             android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button 1" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/button1"
+            android:src="@drawable/ic_button1"
+            android:layout_marginEnd="8dp"/>
 
-        <Button
+        <ImageView
             android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Button 2" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/button2"
+            android:src="@drawable/ic_button2"
+            android:layout_marginEnd="8dp"/>
 
-        <Button
+        <ImageView
             android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Button 3" />
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/button3"
+            android:src="@drawable/ic_button3"/>
     </LinearLayout>
+
 </RelativeLayout>

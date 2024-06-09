@@ -1,23 +1,24 @@
 package com.example.mangapp;
 
-
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.mangapp.ApiResponse.Data;
+import com.bumptech.glide.Glide;
+import com.example.mangapp.ApiResponse.MangaData;
 
 import java.util.List;
 
 public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHolder> {
-    private List<Data> mangaList;
+    private List<MangaData> mangaList;
+    private Context context;
 
-    public MangaAdapter(List<Data> mangaList) {
+    public MangaAdapter(Context context, List<MangaData> mangaList) {
+        this.context = context;
         this.mangaList = mangaList;
     }
 
@@ -30,9 +31,30 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
-        Data manga = mangaList.get(position);
-        holder.mangaTitle.setText(manga.getAttributes().getTitle().get("property1"));
-        // Set other attributes as needed
+        MangaData manga = mangaList.get(position);
+        holder.title.setText(manga.getAttributes().getTitle().get("property1"));
+
+//        // Load the cover image using Glide or another image loading library
+//        if (manga.getCoverImageUrl() != null) {
+//            Glide.with(context)
+//                    .load(manga.getCoverImageUrl())
+//                    .into(holder.coverImage);
+//        } else {
+//            holder.coverImage.setImageResource(R.drawable.placeholder); // Placeholder image
+//        }
+
+        // Set click listeners for the buttons
+        holder.button1.setOnClickListener(v -> {
+            // Handle button 1 click
+        });
+
+        holder.button2.setOnClickListener(v -> {
+            // Handle button 2 click
+        });
+
+        holder.button3.setOnClickListener(v -> {
+            // Handle button 3 click
+        });
     }
 
     @Override
@@ -41,15 +63,17 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
     }
 
     static class MangaViewHolder extends RecyclerView.ViewHolder {
-        TextView mangaTitle;
-        ImageView mangaCover;
-        // Other views
+        ImageView coverImage;
+        TextView title;
+        ImageView button1, button2, button3;
 
         MangaViewHolder(View itemView) {
             super(itemView);
-            mangaTitle = itemView.findViewById(R.id.mangaTitle);
-            mangaCover = itemView.findViewById(R.id.mangaCover);
-            // Initialize other views
+            coverImage = itemView.findViewById(R.id.coverImage);
+            title = itemView.findViewById(R.id.title);
+            button1 = itemView.findViewById(R.id.button1);
+            button2 = itemView.findViewById(R.id.button2);
+            button3 = itemView.findViewById(R.id.button3);
         }
     }
 }

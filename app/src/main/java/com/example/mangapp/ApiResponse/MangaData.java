@@ -1,11 +1,7 @@
 package com.example.mangapp.ApiResponse;
 
 
-import androidx.annotation.NonNull;
-
-import java.util.List;
-
-public class Data {
+public class MangaData {
     private String id;
     private String type;
     private Attributes attributes;

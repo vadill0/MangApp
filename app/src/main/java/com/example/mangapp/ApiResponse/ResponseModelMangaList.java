@@ -5,7 +5,7 @@ import java.util.List;
 public class ResponseModelMangaList {
     private String result;
     private String response;
-    private List<Data> data;
+    private List<MangaData> data;
 
     // Getters and setters
     public String getResult() {
@@ -24,11 +24,11 @@ public class ResponseModelMangaList {
         this.response = response;
     }
 
-    public List<Data> getData() {
+    public List<MangaData> getData() {
         return data;
     }
 
-    public void setData(List<Data> data) {
+    public void setData(List<MangaData> data) {
         this.data = data;
     }
 }
