@@ -2,13 +2,13 @@ package com.example.mangapp.ApiResponse;
 
 import androidx.annotation.NonNull;
 
-import java.util.List;
-
-public class MangaData {
+public class MangaRelationship {
     private String id;
     private String type;
-    private MangaAttributes attributes;
-    private List<MangaRelationship> relationships;
+    private String related;
+    private Object attributes;
+
+    // Getters and setters
 
     public String getId() {
         return id;
@@ -26,30 +26,30 @@ public class MangaData {
         this.type = type;
     }
 
-    public MangaAttributes getAttributes() {
+    public String getRelated() {
+        return related;
+    }
+
+    public void setRelated(String related) {
+        this.related = related;
+    }
+
+    public Object getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(MangaAttributes attributes) {
+    public void setAttributes(Object attributes) {
         this.attributes = attributes;
-    }
-
-    public List<MangaRelationship> getRelationships() {
-        return relationships;
-    }
-
-    public void setRelationships(List<MangaRelationship> relationships) {
-        this.relationships = relationships;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "Data{" +
+        return "Relationship{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
+                ", related='" + related + '\'' +
                 ", attributes=" + attributes +
-                ", relationships=" + relationships +
                 '}';
     }
 }

@@ -25,4 +25,9 @@
     <string name="pfp">Profile picture</string>
     <string name="cover">cover</string>
     <string name="cover_image">cover image</string>
+    <string name="manga_title">Manga Title</string>
+    <string name="manga_read">manga read</string>
+    <string name="manga_pending">manga pending</string>
+    <string name="manga_reading">manga reading</string>
+    <string name="manga_favourite">manga favourite</string>
 </resources>

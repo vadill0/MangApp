@@ -6,18 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
-import com.example.mangapp.ApiResponse.MangaData;
+
+import com.example.mangapp.ApiResponse.MangaListResponse;
 
 import java.util.List;
 
 public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHolder> {
-    private List<MangaData> mangaList;
+    private List<MangaListResponse> mangaList;
     private Context context;
 
-    public MangaAdapter(Context context, List<MangaData> mangaList) {
+    public MangaAdapter(Context context, List<MangaListResponse> mangaList) {
         this.context = context;
         this.mangaList = mangaList;
     }
@@ -31,17 +32,8 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
-        MangaData manga = mangaList.get(position);
-        holder.title.setText(manga.getAttributes().getTitle().get("property1"));
-
-//        // Load the cover image using Glide or another image loading library
-//        if (manga.getCoverImageUrl() != null) {
-//            Glide.with(context)
-//                    .load(manga.getCoverImageUrl())
-//                    .into(holder.coverImage);
-//        } else {
-//            holder.coverImage.setImageResource(R.drawable.placeholder); // Placeholder image
-//        }
+        MangaListResponse manga = mangaList.get(position);
+        //holder.title.setText(manga.getAttributes().getTitle());
 
         // Set click listeners for the buttons
         holder.button1.setOnClickListener(v -> {
@@ -63,17 +55,15 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
     }
 
     static class MangaViewHolder extends RecyclerView.ViewHolder {
-        ImageView coverImage;
         TextView title;
         ImageView button1, button2, button3;
 
         MangaViewHolder(View itemView) {
             super(itemView);
-            coverImage = itemView.findViewById(R.id.coverImage);
             title = itemView.findViewById(R.id.title);
-            button1 = itemView.findViewById(R.id.button1);
-            button2 = itemView.findViewById(R.id.button2);
-            button3 = itemView.findViewById(R.id.button3);
+            button1 = itemView.findViewById(R.id.buttonRead);
+            button2 = itemView.findViewById(R.id.buttonPending);
+            button3 = itemView.findViewById(R.id.buttonReading);
         }
     }
 }

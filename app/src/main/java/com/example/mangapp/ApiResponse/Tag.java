@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-public class MangaData {
+public class Tag {
     private String id;
     private String type;
-    private MangaAttributes attributes;
+    private TagAttributes attributes;
     private List<MangaRelationship> relationships;
+
+    // Getters and setters
 
     public String getId() {
         return id;
@@ -26,11 +28,11 @@ public class MangaData {
         this.type = type;
     }
 
-    public MangaAttributes getAttributes() {
+    public TagAttributes getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(MangaAttributes attributes) {
+    public void setAttributes(TagAttributes attributes) {
         this.attributes = attributes;
     }
 
@@ -45,7 +47,7 @@ public class MangaData {
     @NonNull
     @Override
     public String toString() {
-        return "Data{" +
+        return "Tag{" +
                 "id='" + id + '\'' +
                 ", type='" + type + '\'' +
                 ", attributes=" + attributes +

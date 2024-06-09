@@ -1,8 +1,7 @@
 package com.example.mangapp;
 
 import com.example.mangapp.ApiResponse.CoverImageResponseModel;
-import com.example.mangapp.ApiResponse.ResponseModelMangaList;
-
+import com.example.mangapp.ApiResponse.MangaListResponse;
 
 
 import retrofit2.Call;
@@ -12,14 +11,13 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @GET("manga/{id}")
-    Call<ResponseModelMangaList> getManga(@Path("id") String id);
+    Call<MangaListResponse> getManga(@Path("id") String id);
 
     @GET("manga")
-    Call<ResponseModelMangaList> getMangaList(@Query("title") String title);
+    Call<MangaListResponse> getMangaList(@Query("title") String title);
 
     @GET("manga")
-    Call<ResponseModelMangaList> getMangaList(@Query("title") String title,
-                                              @Query("limit") int number);
+    Call<MangaListResponse> getMangaList();
 
     @GET("cover/{mangaOrCoverId}")
     Call<CoverImageResponseModel> getCover(@Path("id") String id);
