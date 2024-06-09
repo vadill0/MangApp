@@ -16,6 +16,11 @@ public interface ApiService {
     @GET("manga")
     Call<ResponseModelMangaList> getMangaList(@Query("title") String title);
 
+    @GET("manga")
+    Call<ResponseModelMangaList> getMangaList(@Query("title") String title,
+                                              @Query("limit") int number);
+
+
 //    @GET("cover/{mangaOrCoverId}")
 //    Call<> getCover(@Path("id") String id);
 }

@@ -9,8 +9,8 @@ public class Data {
     private String id;
     private String type;
     private Attributes attributes;
-    private List<Relationship> relationships;
 
+    // Getters and setters
     public String getId() {
         return id;
     }
@@ -33,24 +33,5 @@ public class Data {
 
     public void setAttributes(Attributes attributes) {
         this.attributes = attributes;
-    }
-
-    public List<Relationship> getRelationships() {
-        return relationships;
-    }
-
-    public void setRelationships(List<Relationship> relationships) {
-        this.relationships = relationships;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Data{" +
-                "id='" + id + '\'' +
-                ", type='" + type + '\'' +
-                ", attributes=" + attributes +
-                ", relationships=" + relationships +
-                '}';
     }
 }

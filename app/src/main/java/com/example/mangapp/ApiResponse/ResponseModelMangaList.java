@@ -6,10 +6,8 @@ public class ResponseModelMangaList {
     private String result;
     private String response;
     private List<Data> data;
-    private int limit;
-    private int offset;
-    private int total;
 
+    // Getters and setters
     public String getResult() {
         return result;
     }
@@ -33,41 +31,6 @@ public class ResponseModelMangaList {
     public void setData(List<Data> data) {
         this.data = data;
     }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    @Override
-    public String toString() {
-        return "ResponseModelMangaList{" +
-                "result='" + result + '\'' +
-                ", response='" + response + '\'' +
-                ", data=" + data +
-                ", limit=" + limit +
-                ", offset=" + offset +
-                ", total=" + total +
-                '}';
-    }
 }
+
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@drawable/rectangular_background">
+
+    <!-- Placeholder image -->
+
+    <ImageView
+        android:id="@+id/mangaCover"
+        android:layout_width="126dp"
+        android:layout_height="134dp"
+        android:contentDescription="Cover Image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_background" />
+
+    <TextView
+        android:id="@+id/mangaTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/mangaCover"
+        android:layout_marginStart="16dp"
+        android:layout_alignParentTop="true"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:text="Manga Title" /> <!-- Placeholder text -->
+
+    <LinearLayout
+        android:layout_width="310dp"
+        android:layout_height="749dp"
+        android:layout_below="@id/mangaTitle"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="-32dp"
+        android:layout_toEndOf="@id/mangaCover"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button 1" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Button 2" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Button 3" />
+    </LinearLayout>
+</RelativeLayout>
