@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private final List<MangaData> mangaList = new ArrayList<>();
     private int offsetCounter = 0;
 
+    //Resultados de un titulo especifico
+    private boolean titleBeingSearched = false;
+    private String titleSearched = null;
+
 
     SearchView searchView;
     ImageView imageViewPreviousPage, imageViewNextPage;
@@ -64,18 +68,32 @@ public class MainActivity extends AppCompatActivity {
 
         imageViewPreviousPage.setOnClickListener(v -> {
             if (offsetCounter - 10 >= 0) {
-                mangaList.clear();
-                offsetCounter -= 10;
-                getMangaList(offsetCounter);
-                recyclerView.scrollToPosition(0);
+                if(titleBeingSearched){
+                    mangaList.clear();
+                    offsetCounter -= 10;
+                    getMangaList(titleSearched, offsetCounter);
+                    recyclerView.scrollToPosition(0);
+                }else{
+                    mangaList.clear();
+                    offsetCounter -= 10;
+                    getMangaList(offsetCounter);
+                    recyclerView.scrollToPosition(0);
+                }
             }
         });
 
         imageViewNextPage.setOnClickListener(v -> {
-            mangaList.clear();
-            offsetCounter += 10;
-            getMangaList(offsetCounter);
-            recyclerView.scrollToPosition(0);
+            if(titleBeingSearched){
+                mangaList.clear();
+                offsetCounter += 10;
+                getMangaList(titleSearched, offsetCounter);
+                recyclerView.scrollToPosition(0);
+            }else{
+                mangaList.clear();
+                offsetCounter += 10;
+                getMangaList(offsetCounter);
+                recyclerView.scrollToPosition(0);
+            }
         });
 
         recyclerView = findViewById(R.id.recyclerViewManga);
@@ -90,12 +108,24 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                if(query.isEmpty()){
+                    titleBeingSearched = false;
+                }else{
+                    mangaList.clear();
+                    getMangaList(query);
+                    recyclerView.scrollToPosition(0);
+                    titleBeingSearched = true;
+                    titleSearched = query;
+                }
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                if(newText.isEmpty()){
+                    titleBeingSearched = false;
+                }
+                return true;
             }
         });
     }
@@ -129,6 +159,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void getMangaList(String manga){
         Call<MangaListResponse> call = apiService.getMangaList(manga);
+
+        call.enqueue(new Callback<MangaListResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MangaListResponse> call, @NonNull Response<MangaListResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        mangaList.addAll(response.body().getData());
+                        mangaAdapter.notifyDataSetChanged();
+                    }
+                    Log.d("APICALL","SUCCESS");
+                } else {
+                    // Handle the error
+                    Toast.makeText(MainActivity.this,"error",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
+                // Handle the failure
+                Log.e("APICALL",t.getMessage());
+            }
+        });
+    }
+
+    private void getMangaList(String title, int offset){
+        Call<MangaListResponse> call = apiService.getMangaList(title, offset);
 
         call.enqueue(new Callback<MangaListResponse>() {
             @Override
