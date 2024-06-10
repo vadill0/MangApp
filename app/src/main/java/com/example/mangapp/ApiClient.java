@@ -5,6 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     public static final String BASE_URL = "https://api.mangadex.org";
+    public static final String COVER_URL = "https://uploads.mangadex.org/covers/";
     private static Retrofit retrofit;
 
     public static Retrofit getClient() {

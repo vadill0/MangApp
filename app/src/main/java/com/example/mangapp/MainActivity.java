@@ -134,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
 //    private void fetchCoverImages() {
 //        for (MangaData manga : mangaList) {
-//            Call<CoverImageResponseModel> call = apiService.getCoverImage(manga.getId());
-//            call.enqueue(new Callback<CoverImageResponseModel>() {
+//            Call<CoverResponseModel> call = apiService.getCoverImage(manga.getId());
+//            call.enqueue(new Callback<CoverResponseModel>() {
 //                @Override
-//                public void onResponse(Call<CoverImageResponseModel> call, Response<CoverImageResponseModel> response) {
+//                public void onResponse(Call<CoverResponseModel> call, Response<CoverResponseModel> response) {
 //                    if (response.isSuccessful() && response.body() != null) {
 //                        String fileName = response.body().getData().getAttributes().getFileName();
 //                        String imageUrl = ApiClient.BASE_URL + fileName;
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //
 //                @Override
-//                public void onFailure(Call<CoverImageResponseModel> call, Throwable t) {
+//                public void onFailure(Call<CoverResponseModel> call, Throwable t) {
 //                    // Handle failure
 //                }
 //            });
