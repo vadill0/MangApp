@@ -26,9 +26,9 @@ import retrofit2.Response;
 
 public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHolder> {
     private List<MangaData> mangaList;
-    private CoverData cover;
     private Context context;
     private ApiService apiService;
+    private static final String TAG = "APICALL";
 
     public MangaAdapter(Context context, List<MangaData> mangaList) {
         this.context = context;
@@ -63,17 +63,21 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
         } else {
             holder.coverImage.setImageResource(R.drawable.mangaplaceholder); // Set a placeholder image if no cover id is found
         }
-        // Set click listeners for the buttons
-        holder.button1.setOnClickListener(v -> {
-            // Handle button 1 click
+
+        holder.buttonRead.setOnClickListener(v -> {
+
         });
 
-        holder.button2.setOnClickListener(v -> {
-            // Handle button 2 click
+        holder.buttonPending.setOnClickListener(v -> {
+
         });
 
-        holder.button3.setOnClickListener(v -> {
-            // Handle button 3 click
+        holder.buttonReading.setOnClickListener(v -> {
+
+        });
+
+        holder.buttonFavorite.setOnClickListener(v -> {
+
         });
     }
 
@@ -84,15 +88,16 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
 
     static class MangaViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        ImageView coverImage, button1, button2, button3;
+        ImageView coverImage, buttonRead, buttonPending, buttonReading, buttonFavorite;
 
         MangaViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             coverImage = itemView.findViewById(R.id.coverImage);
-            button1 = itemView.findViewById(R.id.buttonRead);
-            button2 = itemView.findViewById(R.id.buttonPending);
-            button3 = itemView.findViewById(R.id.buttonReading);
+            buttonRead = itemView.findViewById(R.id.buttonRead);
+            buttonPending = itemView.findViewById(R.id.buttonPending);
+            buttonReading = itemView.findViewById(R.id.buttonReading);
+            buttonFavorite = itemView.findViewById(R.id.buttonFavorite);
 
             title.setMaxLines(2);
             title.setEllipsize(TextUtils.TruncateAt.END);
@@ -112,13 +117,13 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
                     String imageURL = ApiClient.COVER_URL + mangaId + "/" + coverFileName;
                     Glide.with(context).load(imageURL).into(coverImageView);
                 } else {
-                    Log.d("APICALL", "Cover response not successful");
+                    Log.d(TAG, "Cover response not successful");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<CoverResponseModel> call, @NonNull Throwable t) {
-                Log.e("APICALL", t.getMessage());
+                Log.e(TAG, t.getMessage());
             }
         });
     }
