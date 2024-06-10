@@ -17,7 +17,7 @@ public interface ApiService {
     Call<MangaListResponse> getMangaList(@Query("title") String title);
 
     @GET("manga?includes[]=cover_art")
-    Call<MangaListResponse> getMangaList();
+    Call<MangaListResponse> getMangaList(@Query("offset") int offset);
 
     @GET("cover/{mangaOrCoverId}")
     Call<CoverResponseModel> getCover(@Path("mangaOrCoverId") String id);

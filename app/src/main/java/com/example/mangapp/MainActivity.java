@@ -2,6 +2,7 @@ package com.example.mangapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -34,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
     private ApiService apiService;
     private MangaAdapter mangaAdapter;
     private RecyclerView recyclerView;
-    private List<MangaData> mangaList = new ArrayList<>();
+    private final List<MangaData> mangaList = new ArrayList<>();
+    private int offsetCounter = 0;
 
 
     SearchView searchView;
+    ImageView imageViewPreviousPage, imageViewNextPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,25 @@ public class MainActivity extends AppCompatActivity {
         apiService = ApiClient.getClient().create(ApiService.class);
 
         searchView = findViewById(R.id.searchView);
+        imageViewPreviousPage = findViewById(R.id.imageViewBackwards);
+        imageViewNextPage = findViewById(R.id.imageViewForward);
+
+        imageViewPreviousPage.setOnClickListener(v -> {
+            if (offsetCounter - 10 >= 0) {
+                mangaList.clear();
+                offsetCounter -= 10;
+                getMangaList(offsetCounter);
+                recyclerView.scrollToPosition(0);
+            }
+        });
+
+        imageViewNextPage.setOnClickListener(v -> {
+            mangaList.clear();
+            offsetCounter += 10;
+            getMangaList(offsetCounter);
+            recyclerView.scrollToPosition(0);
+        });
+
         recyclerView = findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -63,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mangaAdapter);
 
         //Primera llamada
-        getMangaList();
+        getMangaList(0);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -79,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void getMangaList(){
-        Call<MangaListResponse> call = apiService.getMangaList();
+    private void getMangaList(int offset){
+        Call<MangaListResponse> call = apiService.getMangaList(offset);
 
         call.enqueue(new Callback<MangaListResponse>() {
             @Override
@@ -131,25 +153,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-
-//    private void fetchCoverImages() {
-//        for (MangaData manga : mangaList) {
-//            Call<CoverResponseModel> call = apiService.getCoverImage(manga.getId());
-//            call.enqueue(new Callback<CoverResponseModel>() {
-//                @Override
-//                public void onResponse(Call<CoverResponseModel> call, Response<CoverResponseModel> response) {
-//                    if (response.isSuccessful() && response.body() != null) {
-//                        String fileName = response.body().getData().getAttributes().getFileName();
-//                        String imageUrl = ApiClient.BASE_URL + fileName;
-//                        manga.setCoverImageUrl(imageUrl);
-//                        mangaAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<CoverResponseModel> call, Throwable t) {
-//                    // Handle failure
-//                }
-//            });
-//        }
 

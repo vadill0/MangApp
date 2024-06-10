@@ -30,4 +30,6 @@
     <string name="manga_pending">manga pending</string>
     <string name="manga_reading">manga reading</string>
     <string name="manga_favourite">manga favourite</string>
+    <string name="next_page">Next page</string>
+    <string name="previous_page">Previous page</string>
 </resources>

@@ -36,14 +36,40 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewManga"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="392dp"
+        android:layout_height="614dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.797"
+        app:layout_constraintHorizontal_bias="0.809"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintVertical_bias="0.855" />
+        app:layout_constraintVertical_bias="0.055" />
+
+    <ImageView
+        android:id="@+id/imageViewForward"
+        android:layout_width="24dp"
+        android:layout_height="31dp"
+        android:contentDescription="@string/next_page"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.581"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewManga"
+        app:layout_constraintVertical_bias="0.722"
+        app:srcCompat="@drawable/greaterthan" />
+
+    <ImageView
+        android:id="@+id/imageViewBackwards"
+        android:layout_width="24dp"
+        android:layout_height="31dp"
+        android:contentDescription="@string/previous_page"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.431"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewManga"
+        app:layout_constraintVertical_bias="0.722"
+        app:srcCompat="@drawable/lessthan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
