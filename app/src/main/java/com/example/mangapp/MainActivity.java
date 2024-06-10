@@ -3,7 +3,6 @@ package com.example.mangapp;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,10 +14,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaListResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,9 +34,10 @@ public class MainActivity extends AppCompatActivity {
     private ApiService apiService;
     private MangaAdapter mangaAdapter;
     private RecyclerView recyclerView;
+    private List<MangaData> mangaList = new ArrayList<>();
+
 
     SearchView searchView;
-    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //mangaAdapter = new MangaAdapter(this, mangaList);
+        mangaAdapter = new MangaAdapter(this, mangaList);
         recyclerView.setAdapter(mangaAdapter);
-        textView = findViewById(R.id.textViewtest);
 
-        // Call the method to fetch data from API
+        //Primera llamada
+        getMangaList();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -71,37 +76,46 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        test();
     }
 
-    private void fetchDataFromApi() {
+
+    private void getMangaList(){
         Call<MangaListResponse> call = apiService.getMangaList();
-        call.enqueue(new Callback<MangaListResponse>() {
-            @Override
-            public void onResponse(Call<MangaListResponse> call, Response<MangaListResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    textView.setText(response.body().toString());
-                    //mangaList.addAll(response.body().getData());
-                    //mangaAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MangaListResponse> call, Throwable t) {
-                // Handle failure
-                Log.e("API CALL",t.getMessage());
-            }
-        });
-    }
-
-    private void test(){
-        Call<MangaListResponse> call = apiService.getMangaList("One piece");
 
         call.enqueue(new Callback<MangaListResponse>() {
             @Override
             public void onResponse(@NonNull Call<MangaListResponse> call, @NonNull Response<MangaListResponse> response) {
                 if (response.isSuccessful()) {
-                    textView.setText(response.body().toString());
+                    if (response.body() != null) {
+                        mangaList.addAll(response.body().getData());
+                        mangaAdapter.notifyDataSetChanged();
+                    }
+                    Log.d("APICALL","SUCCESS");
+                } else {
+                    // Handle the error
+                    Toast.makeText(MainActivity.this,"error",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
+                // Handle the failure
+                Log.e("APICALL",t.getMessage());
+            }
+        });
+    }
+
+    private void getMangaList(String manga){
+        Call<MangaListResponse> call = apiService.getMangaList(manga);
+
+        call.enqueue(new Callback<MangaListResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<MangaListResponse> call, @NonNull Response<MangaListResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        mangaList.addAll(response.body().getData());
+                        mangaAdapter.notifyDataSetChanged();
+                    }
                     Log.d("APICALL","SUCCESS");
                 } else {
                     // Handle the error

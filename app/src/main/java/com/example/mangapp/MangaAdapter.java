@@ -10,15 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mangapp.ApiResponse.MangaListResponse;
+import com.example.mangapp.ApiResponse.MangaData;
 
 import java.util.List;
 
 public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHolder> {
-    private List<MangaListResponse> mangaList;
+    private List<MangaData> mangaList;
     private Context context;
 
-    public MangaAdapter(Context context, List<MangaListResponse> mangaList) {
+    public MangaAdapter(Context context, List<MangaData> mangaList) {
         this.context = context;
         this.mangaList = mangaList;
     }
@@ -32,8 +32,8 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
-        MangaListResponse manga = mangaList.get(position);
-        //holder.title.setText(manga.getAttributes().getTitle());
+        MangaData manga = mangaList.get(position);
+        holder.title.setText(manga.getAttributes().getTitle().get("en"));
 
         // Set click listeners for the buttons
         holder.button1.setOnClickListener(v -> {
