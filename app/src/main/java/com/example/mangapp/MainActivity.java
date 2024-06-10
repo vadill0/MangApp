@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnItemClickListener{
 
 
     private FirebaseAuth mAuth;
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mangaAdapter = new MangaAdapter(this, mangaList);
+        mangaAdapter = new MangaAdapter(this, mangaList, this);
         recyclerView.setAdapter(mangaAdapter);
 
         //Primera llamada
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
                 // Handle the failure
-                Log.e("APICALL",t.getMessage());
+                Log.e("APICALL", String.valueOf(t.getCause()));
             }
         });
     }
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
                 // Handle the failure
-                Log.e("APICALL",t.getMessage());
+                Log.e("APICALL", String.valueOf(t.getCause()));
             }
         });
     }
@@ -204,9 +204,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
                 // Handle the failure
-                Log.e("APICALL",t.getMessage());
+                Log.e("APICALL", String.valueOf(t.getCause()));
             }
         });
+    }
+
+
+    @Override
+    public void onItemClick(MangaData manga) {
+        // Handle the item click event, e.g., navigate to a detail screen
+        Toast.makeText(this, "Clicked: " + manga.getAttributes().getTitle().get("en"), Toast.LENGTH_SHORT).show();
     }
 }
 

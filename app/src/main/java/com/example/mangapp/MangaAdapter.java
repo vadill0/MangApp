@@ -29,10 +29,12 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
     private Context context;
     private ApiService apiService;
     private static final String TAG = "APICALL";
+    private OnItemClickListener listener;
 
-    public MangaAdapter(Context context, List<MangaData> mangaList) {
+    public MangaAdapter(Context context, List<MangaData> mangaList, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.mangaList = mangaList;
+        this.listener = onItemClickListener;
         this.apiService = ApiClient.getClient().create(ApiService.class);
     }
 
@@ -79,6 +81,7 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
         holder.buttonFavorite.setOnClickListener(v -> {
 
         });
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(manga));
     }
 
     @Override
@@ -123,7 +126,7 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
 
             @Override
             public void onFailure(@NonNull Call<CoverResponseModel> call, @NonNull Throwable t) {
-                Log.e(TAG, t.getMessage());
+                Log.e(TAG, String.valueOf(t.getCause()));
             }
         });
     }
