@@ -66,21 +66,6 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
             holder.coverImage.setImageResource(R.drawable.mangaplaceholder); // Set a placeholder image if no cover id is found
         }
 
-        holder.buttonRead.setOnClickListener(v -> {
-
-        });
-
-        holder.buttonPending.setOnClickListener(v -> {
-
-        });
-
-        holder.buttonReading.setOnClickListener(v -> {
-
-        });
-
-        holder.buttonFavorite.setOnClickListener(v -> {
-
-        });
         holder.itemView.setOnClickListener(v -> listener.onItemClick(manga));
     }
 
@@ -91,16 +76,12 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
 
     static class MangaViewHolder extends RecyclerView.ViewHolder {
         TextView title;
-        ImageView coverImage, buttonRead, buttonPending, buttonReading, buttonFavorite;
+        ImageView coverImage;
 
         MangaViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             coverImage = itemView.findViewById(R.id.coverImage);
-            buttonRead = itemView.findViewById(R.id.buttonRead);
-            buttonPending = itemView.findViewById(R.id.buttonPending);
-            buttonReading = itemView.findViewById(R.id.buttonReading);
-            buttonFavorite = itemView.findViewById(R.id.buttonFavorite);
 
             title.setMaxLines(2);
             title.setEllipsize(TextUtils.TruncateAt.END);
