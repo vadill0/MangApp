@@ -61,7 +61,7 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
         }
 
         if (coverId != null) {
-            loadCoverImage(coverId, holder.coverImage, mangaId);
+            loadCoverImage(coverId, holder.coverImage, mangaId, apiService, context);
         } else {
             holder.coverImage.setImageResource(R.drawable.mangaplaceholder); // Set a placeholder image if no cover id is found
         }
@@ -89,7 +89,7 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
     }
 
 
-    private void loadCoverImage(String coverId, ImageView coverImageView, String mangaId) {
+    public static void loadCoverImage(String coverId, ImageView coverImageView, String mangaId, ApiService apiService, Context context) {
         Call<CoverResponseModel> call = apiService.getCover(coverId);
 
         call.enqueue(new Callback<CoverResponseModel>() {
