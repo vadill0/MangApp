@@ -39,4 +39,6 @@
     <string name="manga_type">Shounen</string>
     <string name="type">Manga</string>
     <string name="manga_description">Description</string>
+    <string name="list_selector">List selector</string>
+    <string name="profile_picture">Profile picture</string>
 </resources>
