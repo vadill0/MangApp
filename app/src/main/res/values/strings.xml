@@ -36,4 +36,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="manga_cover">Manga cover</string>
     <string name="release_year">Release year</string>
+    <string name="manga_type">Shounen</string>
+    <string name="type">Manga</string>
+    <string name="manga_description">Description</string>
 </resources>

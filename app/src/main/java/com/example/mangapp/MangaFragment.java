@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,8 +51,12 @@ public class MangaFragment extends Fragment {
         textViewMangaType = view.findViewById(R.id.textViewMangaType);
         textViewMangaDescription = view.findViewById(R.id.textViewMangaDescription);
 
+        textViewMangaDescription.setMaxLines(15);
+        textViewMangaDescription.setEllipsize(TextUtils.TruncateAt.END);
+
         getManga(MANGA_ID);
         MangaAdapter.loadCoverImage(COVER_ID, imageViewMangaCover, MANGA_ID, apiService, getActivity());
+        textViewMangaType.setWidth(imageViewMangaCover.getWidth());
         //Funciones OnClick
         imageViewReturn.setOnClickListener(v ->{
             if (getActivity() != null) {
@@ -94,8 +99,15 @@ public class MangaFragment extends Fragment {
                         mangaData = response.body().getData();
                         textViewType.setText(mangaData.getType().toUpperCase());
                         textViewMangaTitle.setText(mangaData.getAttributes().getTitle().get("en"));
-                        textViewMangaType.setText(mangaData.getAttributes().getCreatedAt());
-                        textViewMangaDescription.setText(mangaData.getAttributes().getDescription().get("en"));
+                        if(mangaData.getAttributes().getPublicationDemographic() != null){
+                            textViewMangaType.setText(mangaData.getAttributes().getPublicationDemographic().toUpperCase());
+                        }
+                        if (!mangaData.getAttributes().getDescription().isEmpty()){
+                            textViewMangaDescription.setText(mangaData.getAttributes().getDescription().get("en"));
+                        }else{
+                            textViewMangaDescription.setText("Description not available");
+                        }
+
                     }
                     Log.d("APICALL","SUCCESS");
                 } else {

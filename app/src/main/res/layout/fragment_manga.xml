@@ -48,56 +48,64 @@
 
     <TextView
         android:id="@+id/textViewType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="30dp"
+        android:background="#636363"
+        android:backgroundTint="#757575"
+        android:gravity="center"
+        android:text="@string/type"
+        android:textColor="#E0E0E0"
         app:layout_constraintBottom_toTopOf="@+id/imageViewMangaCover"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintHorizontal_bias="0.138"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.892" />
+        app:layout_constraintVertical_bias="0.992" />
 
     <TextView
         android:id="@+id/textViewMangaTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.751"
+        app:layout_constraintHorizontal_bias="0.933"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.223" />
+        app:layout_constraintVertical_bias="0.225" />
 
     <TextView
         android:id="@+id/textViewMangaType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="@string/manga_type"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.751"
+        app:layout_constraintHorizontal_bias="0.861"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.273" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewMangaTitle"
+        app:layout_constraintVertical_bias="0.013" />
 
     <TextView
         android:id="@+id/textViewMangaDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="377dp"
+        android:layout_height="323dp"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:text="@string/manga_description"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintHorizontal_bias="0.558"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.522" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewMangaCover"
+        app:layout_constraintVertical_bias="0.126" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttonContainer"
         android:layout_width="411dp"
         android:layout_height="42dp"
-        android:layout_alignBottom="@id/coverImage"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
