@@ -18,6 +18,7 @@ import com.example.mangapp.ApiResponse.CoverResponseModel;
 import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaRelationship;
 
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -49,6 +50,13 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
     public void onBindViewHolder(@NonNull MangaViewHolder holder, int position) {
         MangaData manga = mangaList.get(position);
         holder.title.setText(manga.getAttributes().getTitle().get("en"));
+        if(manga.getAttributes().getYear() == 0){
+            Calendar calendar = Calendar.getInstance();
+            holder.releaseYear.setText(new StringBuilder().append("Release year:\n").append(calendar.get(Calendar.YEAR)));
+        }else{
+            holder.releaseYear.setText(new StringBuilder().append("Release year:\n").append(manga.getAttributes().getYear()).toString());
+        }
+
 
 
         String mangaId = manga.getId();
@@ -75,13 +83,14 @@ public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHol
     }
 
     static class MangaViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
+        TextView title, releaseYear;
         ImageView coverImage;
 
         MangaViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             coverImage = itemView.findViewById(R.id.coverImage);
+            releaseYear = itemView.findViewById(R.id.releaseYear);
 
             title.setMaxLines(2);
             title.setEllipsize(TextUtils.TruncateAt.END);

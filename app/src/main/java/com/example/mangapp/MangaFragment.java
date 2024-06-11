@@ -27,7 +27,7 @@ public class MangaFragment extends Fragment {
     private final String MANGA_ID, COVER_ID;
     private MangaData mangaData = null;
     ImageView imageViewReturn, imageViewPFP, imageViewMangaCover;
-    TextView textViewType, textViewMangaTitle, textViewMangaReleaseDate, textViewMangaDescription;
+    TextView textViewType, textViewMangaTitle, textViewMangaType, textViewMangaDescription;
 
     public MangaFragment(String mangaId, String coverId){
         this.MANGA_ID = mangaId;
@@ -47,7 +47,7 @@ public class MangaFragment extends Fragment {
         imageViewMangaCover = view.findViewById(R.id.imageViewMangaCover);
         textViewType = view.findViewById(R.id.textViewType);
         textViewMangaTitle = view.findViewById(R.id.textViewMangaTitle);
-        textViewMangaReleaseDate = view.findViewById(R.id.textViewMangaReleaseDate);
+        textViewMangaType = view.findViewById(R.id.textViewMangaType);
         textViewMangaDescription = view.findViewById(R.id.textViewMangaDescription);
 
         getManga(MANGA_ID);
@@ -92,7 +92,10 @@ public class MangaFragment extends Fragment {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         mangaData = response.body().getData();
+                        textViewType.setText(mangaData.getType().toUpperCase());
                         textViewMangaTitle.setText(mangaData.getAttributes().getTitle().get("en"));
+                        textViewMangaType.setText(mangaData.getAttributes().getCreatedAt());
+                        textViewMangaDescription.setText(mangaData.getAttributes().getDescription().get("en"));
                     }
                     Log.d("APICALL","SUCCESS");
                 } else {
