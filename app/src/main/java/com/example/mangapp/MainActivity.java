@@ -2,16 +2,22 @@ package com.example.mangapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,9 +48,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private boolean titleBeingSearched = false;
     private String titleSearched = null;
 
-
+    View[] mainViews;
+    View fragmentContainer;
     SearchView searchView;
-    ImageView imageViewPreviousPage, imageViewNextPage;
+    ImageView imageViewPreviousPage, imageViewNextPage, imageViewPFP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +69,20 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         apiService = ApiClient.getClient().create(ApiService.class);
 
+        fragmentContainer = findViewById(R.id.fragment_container);
         searchView = findViewById(R.id.searchView);
         imageViewPreviousPage = findViewById(R.id.imageViewBackwards);
         imageViewNextPage = findViewById(R.id.imageViewForward);
+        imageViewPFP = findViewById(R.id.imageViewPFP);
+
+        recyclerView = findViewById(R.id.recyclerViewManga);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mangaAdapter = new MangaAdapter(this, mangaList, this);
+        recyclerView.setAdapter(mangaAdapter);
+
+
+        mainViews = new View[]{searchView, imageViewPreviousPage, imageViewNextPage, recyclerView, imageViewPFP};
 
         imageViewPreviousPage.setOnClickListener(v -> {
             if (offsetCounter - 10 >= 0) {
@@ -96,12 +114,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             }
         });
 
-        recyclerView = findViewById(R.id.recyclerViewManga);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        mangaAdapter = new MangaAdapter(this, mangaList, this);
-        recyclerView.setAdapter(mangaAdapter);
-
         //Primera llamada
         getMangaList(0);
 
@@ -126,6 +138,32 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     titleBeingSearched = false;
                 }
                 return true;
+            }
+        });
+
+        //Ocultacion para fragments
+        //Ocultacion de botones de la activity en los fragments
+        OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
+        onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                FragmentManager fm = getSupportFragmentManager();
+                if (fm.getBackStackEntryCount() > 1) {
+                    fm.popBackStack();
+                } else {
+                    // Show all views again when no fragment is in the stack
+                    for (View view : mainViews) {
+                        view.setVisibility(View.VISIBLE);
+                    }
+                    fragmentContainer.setVisibility(View.GONE);
+                    if (fm.getBackStackEntryCount() > 0) {
+                        fm.popBackStack();
+                    } else {
+                        // Remove the callback to allow default back press handling
+                        setEnabled(false);
+                        onBackPressedDispatcher.onBackPressed();
+                    }
+                }
             }
         });
     }
@@ -214,6 +252,32 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public void onItemClick(MangaData manga) {
         // Handle the item click event, e.g., navigate to a detail screen
         Toast.makeText(this, "Clicked: " + manga.getAttributes().getTitle().get("en"), Toast.LENGTH_SHORT).show();
+        openMangaFragment();
+    }
+
+    public void openMangaFragment(){
+        loadFragment(new MangaFragment());
+    }
+
+    private void loadFragment(Fragment fragment) {
+        // Hide all views except the fragment container
+        for (View view : mainViews) {
+            view.setVisibility(View.GONE);
+        }
+        fragmentContainer.setVisibility(View.VISIBLE);
+
+        // Create a FragmentManager
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        // Create a FragmentTransaction to begin the transaction and replace the Fragment
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // Replace the FrameLayout with new Fragment
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+
+        // Commit the transaction
+        fragmentTransaction.commit();
     }
 }
 

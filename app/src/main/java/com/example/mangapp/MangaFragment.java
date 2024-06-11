@@ -2,7 +2,9 @@ package com.example.mangapp;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +32,31 @@ public class MangaFragment extends Fragment {
 
         //Funciones OnClick
         imageViewReturn.setOnClickListener(v ->{
-
+            if (getActivity() != null) {
+                getActivity().getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
         imageViewPFP.setOnClickListener(v -> {
 
         });
+
+        // Funcion para ir para atras y rellenar el activity
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getActivity() != null) {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    if (fragmentManager.getBackStackEntryCount() > 1) {
+                        fragmentManager.popBackStack();
+                    } else {
+                        setEnabled(false);
+                        getActivity().getOnBackPressedDispatcher().onBackPressed();
+                    }
+                }
+            }
+        });
+
 
         return view;
     }
