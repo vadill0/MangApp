@@ -16,6 +16,13 @@ public class MangaFragment extends Fragment {
 
     ImageView imageViewReturn, imageViewPFP, imageViewMangaCover;
     TextView textViewType, textViewMangaTitle, textViewMangaReleaseDate, textViewMangaDescription;
+    private final String MANGA_ID, COVER_ID;
+
+    public MangaFragment(String mangaId, String coverId){
+        this.MANGA_ID = mangaId;
+        this.COVER_ID = coverId;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

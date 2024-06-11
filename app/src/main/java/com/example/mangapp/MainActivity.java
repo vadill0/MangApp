@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaListResponse;
+import com.example.mangapp.ApiResponse.MangaRelationship;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -252,11 +253,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public void onItemClick(MangaData manga) {
         // Handle the item click event, e.g., navigate to a detail screen
         Toast.makeText(this, "Clicked: " + manga.getAttributes().getTitle().get("en"), Toast.LENGTH_SHORT).show();
-        openMangaFragment();
+        String coverId = null;
+        for (MangaRelationship mangaRelationship : manga.getRelationships()) {
+            if (mangaRelationship.getType().equals("cover_art")) {
+                coverId = mangaRelationship.getId();
+                break;
+            }
+        }
+        openMangaFragment(manga.getId(), coverId);
     }
 
-    public void openMangaFragment(){
-        loadFragment(new MangaFragment());
+    public void openMangaFragment(String mangaId, String coverId){
+        loadFragment(new MangaFragment(mangaId, coverId));
     }
 
     private void loadFragment(Fragment fragment) {
