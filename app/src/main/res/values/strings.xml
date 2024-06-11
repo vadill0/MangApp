@@ -41,4 +41,6 @@
     <string name="manga_description">Description</string>
     <string name="list_selector">List selector</string>
     <string name="profile_picture">Profile picture</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="change_password">Change password</string>
 </resources>

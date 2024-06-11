@@ -43,7 +43,7 @@ public class ForgotPasswordFragment extends Fragment {
             if(SignInActivity.emailValidation(email)){
                 Toast.makeText(getActivity(),"Invalid email",Toast.LENGTH_SHORT).show();
             }else{
-                sendRecoveryEMail(email);
+                sendRecoveryEMail(email, mAuth);
             }
         });
 
@@ -72,7 +72,7 @@ public class ForgotPasswordFragment extends Fragment {
         return view;
     }
 
-    public void sendRecoveryEMail(String email){
+    public static void sendRecoveryEMail(String email, FirebaseAuth mAuth){
         mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 Log.d(TAG,"Email sent");

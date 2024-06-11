@@ -1,5 +1,6 @@
 package com.example.mangapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -18,7 +19,6 @@ import android.widget.Toast;
 
 import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaResponse;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,9 +64,7 @@ public class MangaFragment extends Fragment {
             }
         });
 
-        imageViewPFP.setOnClickListener(v -> {
-
-        });
+        imageViewPFP.setOnClickListener(v -> openProfileFragment());
 
         // Funcion para ir para atras y rellenar el activity
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -123,4 +121,28 @@ public class MangaFragment extends Fragment {
             }
         });
     }
+
+    public interface OnProfileButtonListener {
+        void onProfileButtonListener();
+    }
+
+    private MangaFragment.OnProfileButtonListener mListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof MangaFragment.OnProfileButtonListener) {
+            mListener = (MangaFragment.OnProfileButtonListener) context;
+        } else {
+            throw new RuntimeException(context + " must implement OnProfileButtonListener");
+        }
+    }
+
+    // Call this method when you want to open the email verification fragment
+    private void openProfileFragment() {
+        if (mListener != null) {
+            mListener.onProfileButtonListener();
+        }
+    }
+
 }

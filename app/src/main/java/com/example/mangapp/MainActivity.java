@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener{
+public class MainActivity extends AppCompatActivity implements OnItemClickListener, MangaFragment.OnProfileButtonListener{
 
 
     private FirebaseAuth mAuth;
@@ -286,6 +286,16 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         // Commit the transaction
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onProfileButtonListener() {
+        // Handle the fragment transaction to open the ProfileFragment
+        Fragment profileFragment = new ProfileFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, profileFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
 
