@@ -57,19 +57,19 @@ public class DatabaseManager {
     }
 
     public Cursor getReadMangaFromUser(String userId){
-     return database.query(DatabaseHelper.TABLE_READ, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, "owner=?", new String[]{userId}, null, null, null);
+     return database.query(DatabaseHelper.TABLE_READ, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
     public Cursor getPendingMangaFromUser(String userId){
-        return database.query(DatabaseHelper.TABLE_PENDING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, "owner=?", new String[]{userId}, null, null, null);
+        return database.query(DatabaseHelper.TABLE_PENDING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
     public Cursor getFavoriteMangaFromUser(String userId){
-        return database.query(DatabaseHelper.TABLE_FAVORITES, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, "owner=?", new String[]{userId}, null, null, null);
+        return database.query(DatabaseHelper.TABLE_FAVORITES, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
     public Cursor getReadingMangaFromUser(String userId){
-        return database.query(DatabaseHelper.TABLE_READING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, "owner=?", new String[]{userId}, null, null, null);
+        return database.query(DatabaseHelper.TABLE_READING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
 }
