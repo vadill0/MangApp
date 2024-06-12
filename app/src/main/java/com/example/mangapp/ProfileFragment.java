@@ -1,5 +1,6 @@
 package com.example.mangapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,9 +17,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.mangapp.LogIn.ForgotPasswordFragment;
 import com.example.mangapp.LogIn.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
@@ -30,6 +35,7 @@ import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firestore;
     private static final int PICK_IMAGE_REQ = 1;
     Button buttonChangePFP, buttonChangePassword;
     ImageView imageViewReturn, imageViewSignOut, imageViewPFP;
@@ -40,6 +46,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
 
         buttonChangePFP = view.findViewById(R.id.buttonChangePFP);
         buttonChangePassword = view.findViewById(R.id.buttonChangePassword);
@@ -56,7 +63,7 @@ public class ProfileFragment extends Fragment {
         buttonChangePFP.setOnClickListener(v -> openFilePicker());
         buttonChangePassword.setOnClickListener(v -> ForgotPasswordFragment.sendRecoveryEMail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(),mAuth));
 
-
+        loadProfilePicture(firestore, imageViewPFP, getActivity());
 
         // Funcion para ir para atras y rellenar el activity
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -115,8 +122,32 @@ public class ProfileFragment extends Fragment {
         firestore.collection("users").document(Objects.requireNonNull(userId)).set(updates, SetOptions.merge()).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_SHORT).show();
+                loadProfilePicture(firestore, imageViewPFP, getActivity());
             }else {
                 Toast.makeText(getActivity(), "Failed to save image", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public static void loadProfilePicture(FirebaseFirestore firestore, ImageView imageViewPFP, Context context){
+        String userId = FirebaseAuth.getInstance().getUid();
+        DocumentReference documentReference = firestore.collection("users").document(userId);
+
+
+        documentReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String profilePictureUrl = document.getString("profile_picture");
+                    if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                        Glide.with(context)
+                                .load(profilePictureUrl)
+                                .apply(new RequestOptions().placeholder(R.drawable.profileicon29).error(R.drawable.profileicon29))
+                                .into(imageViewPFP);
+                    }
+                }
+            } else {
+                Toast.makeText(context, "Failed to load profile picture", Toast.LENGTH_SHORT).show();
             }
         });
     }

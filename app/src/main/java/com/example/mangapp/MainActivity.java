@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
 
     private FirebaseAuth mAuth;
+
     private ApiService apiService;
     private MangaAdapter mangaAdapter;
     private RecyclerView recyclerView;
@@ -117,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         //Primera llamada
         getMangaList(0);
+
+        imageViewPFP.setOnClickListener(v -> openProfileFragment());
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -267,6 +270,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         loadFragment(new MangaFragment(mangaId, coverId));
     }
 
+    public void openProfileFragment(){
+        loadFragment(new ProfileFragment());
+    }
+
     private void loadFragment(Fragment fragment) {
         // Hide all views except the fragment container
         for (View view : mainViews) {
@@ -297,5 +304,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 .addToBackStack(null)
                 .commit();
     }
+
 }
 
