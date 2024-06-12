@@ -26,6 +26,7 @@ import com.example.mangapp.ApiResponse.MangaListResponse;
 import com.example.mangapp.ApiResponse.MangaRelationship;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firestore;
 
     private ApiService apiService;
     private MangaAdapter mangaAdapter;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
 
         apiService = ApiClient.getClient().create(ApiService.class);
 
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         mangaAdapter = new MangaAdapter(this, mangaList, this);
         recyclerView.setAdapter(mangaAdapter);
 
+        ProfileFragment.loadProfilePicture(firestore, imageViewPFP,this);
 
         mainViews = new View[]{searchView, imageViewPreviousPage, imageViewNextPage, recyclerView, imageViewPFP};
 

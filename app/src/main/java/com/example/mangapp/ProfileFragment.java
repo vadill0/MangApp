@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mangapp.LogIn.ForgotPasswordFragment;
 import com.example.mangapp.LogIn.SignInActivity;
@@ -39,6 +40,7 @@ public class ProfileFragment extends Fragment {
     private static final int PICK_IMAGE_REQ = 1;
     Button buttonChangePFP, buttonChangePassword;
     ImageView imageViewReturn, imageViewSignOut, imageViewPFP;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class ProfileFragment extends Fragment {
 
         loadProfilePicture(firestore, imageViewPFP, getActivity());
 
-        // Funcion para ir para atras y rellenar el activity
+        // Handle back navigation and populate the activity
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -84,7 +86,7 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private void openFilePicker(){
+    private void openFilePicker() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -100,39 +102,54 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    private void uploadImgToFirebase(Uri imageUri){
-        if(imageUri != null){
-            StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile_pictures/" + System.currentTimeMillis() + ".jpg");
+    private void uploadImgToFirebase(Uri imageUri) {
+        if (imageUri != null) {
+            String userId = FirebaseAuth.getInstance().getUid();
+            if (userId == null) {
+                Toast.makeText(getActivity(), "User not logged in", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile_pictures/" + userId + ".jpg");
             storageReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                         String downloadUri = uri.toString();
                         saveImgUrltoFirebase(downloadUri);
-                    })).addOnFailureListener(e -> {
-                        Toast.makeText(getActivity(), "Upload failed", Toast.LENGTH_SHORT).show();
-                    });
+                        Toast.makeText(getActivity(), "File uploaded", Toast.LENGTH_SHORT).show();
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
 
-    private void saveImgUrltoFirebase(String imageUrl){
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private void saveImgUrltoFirebase(String imageUrl) {
         String userId = FirebaseAuth.getInstance().getUid();
+        if (userId == null) {
+            Toast.makeText(getActivity(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Map<String, Object> updates = new HashMap<>();
         updates.put("profile_picture", imageUrl);
 
-        firestore.collection("users").document(Objects.requireNonNull(userId)).set(updates, SetOptions.merge()).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_SHORT).show();
-                loadProfilePicture(firestore, imageViewPFP, getActivity());
-            }else {
-                Toast.makeText(getActivity(), "Failed to save image", Toast.LENGTH_SHORT).show();
-            }
-        });
+        firestore.collection("users").document(userId).set(updates, SetOptions.merge())
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(getActivity(), "Image saved", Toast.LENGTH_SHORT).show();
+                        loadProfilePicture(firestore, imageViewPFP, getActivity());
+                    } else {
+                        Toast.makeText(getActivity(), "Failed to save image", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    public static void loadProfilePicture(FirebaseFirestore firestore, ImageView imageViewPFP, Context context){
+    public static void loadProfilePicture(FirebaseFirestore firestore, ImageView imageViewPFP, Context context) {
         String userId = FirebaseAuth.getInstance().getUid();
-        DocumentReference documentReference = firestore.collection("users").document(userId);
+        if (userId == null) {
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        DocumentReference documentReference = firestore.collection("users").document(userId);
 
         documentReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -142,17 +159,19 @@ public class ProfileFragment extends Fragment {
                     if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
                         Glide.with(context)
                                 .load(profilePictureUrl)
-                                .apply(new RequestOptions().placeholder(R.drawable.profileicon29).error(R.drawable.profileicon29))
+                                .apply(new RequestOptions().placeholder(R.drawable.profileicon29).error(R.drawable.profileicon29).apply(RequestOptions.bitmapTransform(new RoundedCorners(100))))
                                 .into(imageViewPFP);
                     }
                 }
             } else {
-                Toast.makeText(context, "Failed to load profile picture", Toast.LENGTH_SHORT).show();
+                if(!context.getClass().getName().equals(MainActivity.class.getName())){
+                    Toast.makeText(context, "Failed to load profile picture", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    private void signOut(){
+    private void signOut() {
         mAuth.signOut();
         Intent intent = new Intent(getActivity(), SignInActivity.class);
         startActivity(intent);

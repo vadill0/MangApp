@@ -19,12 +19,15 @@ import android.widget.Toast;
 
 import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaResponse;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MangaFragment extends Fragment {
     private ApiService apiService;
+    private FirebaseFirestore firestore;
     private final String MANGA_ID, COVER_ID;
     private MangaData mangaData = null;
     ImageView imageViewReturn, imageViewPFP, imageViewMangaCover;
@@ -42,6 +45,7 @@ public class MangaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_manga, container, false);
 
         apiService = ApiClient.getClient().create(ApiService.class);
+        firestore = FirebaseFirestore.getInstance();
 
         imageViewReturn = view.findViewById(R.id.imageViewReturn);
         imageViewPFP = view.findViewById(R.id.imageViewPFP);
@@ -63,6 +67,8 @@ public class MangaFragment extends Fragment {
                 getActivity().getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
+        ProfileFragment.loadProfilePicture(firestore, imageViewPFP,getActivity());
 
         imageViewPFP.setOnClickListener(v -> openProfileFragment());
 
