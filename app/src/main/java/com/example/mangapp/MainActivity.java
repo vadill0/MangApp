@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
-
     private ApiService apiService;
     private MangaAdapter mangaAdapter;
     private RecyclerView recyclerView;
@@ -71,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
+
 
         apiService = ApiClient.getClient().create(ApiService.class);
 

@@ -72,4 +72,9 @@ public class DatabaseManager {
         return database.query(DatabaseHelper.TABLE_READING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
+    public Cursor getAllUsers() {
+        return database.query(DatabaseHelper.TABLE_USERS, null, null, null, null, null, null);
+    }
+
+
 }

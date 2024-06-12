@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 
+import com.example.mangapp.DataBase.DatabaseManager;
 import com.example.mangapp.MainActivity;
 import com.example.mangapp.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -39,8 +40,10 @@ import java.util.regex.Pattern;
 public class SignInActivity extends AppCompatActivity implements SignUpFragment.OnEmailVerificationRequestedListener{
     private FirebaseAuth mAuth;
     private GoogleSignInClient googleSignInClient;
+    private DatabaseManager databaseManager;
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "EmailPass";
+    private static final String TAG_DB = "UserAddedToDB";
     View[] mainViews; //Views de la Activity
     View fragmentContainer; //Frame container
 
@@ -71,6 +74,10 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
 
         //Iniciar la instancia de FB
         mAuth = FirebaseAuth.getInstance();
+
+        //Iniciar base de datos
+        databaseManager = new DatabaseManager(this);
+        databaseManager.open();
 
         //Configuracion Google SignIn
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -164,6 +171,7 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
                 FirebaseUser user = mAuth.getCurrentUser();
                 if(user != null && user.isEmailVerified()){
                     Toast.makeText(SignInActivity.this,"Sign in successful",Toast.LENGTH_SHORT).show();
+                    addUserToDb(user);
                     updateUI(user);
                 }else{
                     Toast.makeText(SignInActivity.this,"You need to verify your email to sign in",Toast.LENGTH_SHORT).show();
@@ -201,6 +209,7 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
                     if(task.isSuccessful()){
                         Log.d(TAG,"signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
+                        addUserToDb(Objects.requireNonNull(user));
                         updateUI(Objects.requireNonNull(user));
                     }else{
                         Log.e(TAG,"signInWithCredential:failure",task.getException());
@@ -257,6 +266,21 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
         if(user != null){
             intent = new Intent(SignInActivity.this, MainActivity.class);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        databaseManager.close();
+    }
+
+    protected void addUserToDb(FirebaseUser user){
+        long insertUser = databaseManager.insertUser(user.getUid(), user.getEmail());
+        if(insertUser != -1){
+            Log.d(TAG_DB,"User added successfully");
+        }else{
+            Log.d(TAG_DB,"Error adding user");
         }
     }
 }
