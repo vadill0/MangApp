@@ -29,16 +29,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_FB_ID + " TEXT PRIMARY KEY, " +
             COLUMN_EMAIL + " TEXT)";
     private static final String CREATE_TABLE_READ = "CREATE TABLE " + TABLE_READ + " (" +
-            COLUMN_MANGA_ID + " TEXT PRIMARY KEY, " +
+            COLUMN_MANGA_ID + " TEXT, " +
             COLUMN_FB_ID + " TEXT, FOREIGN KEY(" + COLUMN_FB_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_FB_ID + "))";
     private static final String CREATE_TABLE_PENDING = "CREATE TABLE " + TABLE_PENDING + " (" +
-            COLUMN_MANGA_ID + " TEXT PRIMARY KEY, " +
+            COLUMN_MANGA_ID + " TEXT, " +
             COLUMN_FB_ID + " TEXT, FOREIGN KEY(" + COLUMN_FB_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_FB_ID + "))";
     private static final String CREATE_TABLE_FAVORITES = "CREATE TABLE " + TABLE_FAVORITES + " (" +
-            COLUMN_MANGA_ID + " TEXT PRIMARY KEY, " +
+            COLUMN_MANGA_ID + " TEXT, " +
             COLUMN_FB_ID + " TEXT, FOREIGN KEY(" + COLUMN_FB_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_FB_ID + "))";
     private static final String CREATE_TABLE_READING = "CREATE TABLE " + TABLE_READING + " (" +
-            COLUMN_MANGA_ID + " TEXT PRIMARY KEY, " +
+            COLUMN_MANGA_ID + " TEXT, " +
             COLUMN_FB_ID + " TEXT, FOREIGN KEY(" + COLUMN_FB_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_FB_ID + "))";
 
 
