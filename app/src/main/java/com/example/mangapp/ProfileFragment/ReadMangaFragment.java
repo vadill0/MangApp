@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mangapp.ApiClient;
@@ -43,7 +42,6 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
     private MangaAdapter mangaAdapter;
     private List<MangaData> mangaList = new ArrayList<>();
     private List<String> mangaIds;
-    TextView textView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,15 +56,16 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
         recyclerView = view.findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        fillMangaList(user);
+        Log.d("MANGALIST", String.valueOf(mangaList.size()));
 
         mangaAdapter = new MangaAdapter(getActivity(), mangaList, this);
         recyclerView.setAdapter(mangaAdapter);
-        textView = view.findViewById(R.id.textView3);
-
-        textView.setText("hola");
-        fillMangaList(user);
 
 
+        Log.d("frag iniciado", "sdadasdsa");
+
+        getAllReadManga(user);
         return view;
     }
 
@@ -77,14 +76,12 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
             cursor = databaseManager.getMangaFromUser(DatabaseHelper.TABLE_READ, user.getUid());
             if (cursor != null && cursor.moveToFirst()) {
                 int mangaIdColumnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_MANGA_ID);
-                if (mangaIdColumnIndex >= 0) {
-                    do {
-                        String mangaId = cursor.getString(mangaIdColumnIndex);
-                        mangaIds.add(mangaId);
-                    } while (cursor.moveToNext());
-                } else {
-                    Log.e("DatabaseManager", "Column not found: " + DatabaseHelper.COLUMN_MANGA_ID);
-                }
+                do {
+                    String mangaId = cursor.getString(mangaIdColumnIndex);
+                    mangaIds.add(mangaId);
+                } while (cursor.moveToNext());
+                Log.d("DatabaseManager", mangaIds.toString());
+
             }
         } finally {
             if (cursor != null) {
@@ -115,9 +112,11 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
             public void onResponse(@NonNull Call<MangaResponse> call, @NonNull Response<MangaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     mangaList.add(response.body().getData());
+                    Log.d("ENtro en el if", "Si");
                     mangaAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getActivity(),"Error in response",Toast.LENGTH_SHORT).show();
+                    Log.d("ELSE", "no");
                 }
             }
 
@@ -130,8 +129,15 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
 
     private void fillMangaList(FirebaseUser user){
         mangaIds = getAllReadManga(user);
+        Log.d("FILL", String.valueOf(mangaIds.size()));
         for (String mangaId: mangaIds) {
             getManga(mangaId);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        databaseManager.close();
     }
 }
