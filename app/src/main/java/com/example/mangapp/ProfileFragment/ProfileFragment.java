@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +26,7 @@ import com.example.mangapp.LogIn.ForgotPasswordFragment;
 import com.example.mangapp.LogIn.SignInActivity;
 import com.example.mangapp.MainActivity;
 import com.example.mangapp.R;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,9 +44,10 @@ public class ProfileFragment extends Fragment {
     private FirebaseFirestore firestore;
     private static final int PICK_IMAGE_REQ = 1;
     Button buttonChangePFP, buttonChangePassword, buttonChangeUsername;
-    ImageView imageViewReturn, imageViewSignOut, imageViewPFP, imageViewButtonRead, imageViewButtonPending, imageViewButtonReading, imageViewButtonFavorite;
+    ImageView imageViewReturn, imageViewSignOut, imageViewPFP;
     TextView textViewProfileUsername;
     FrameLayout frameLayout;
+    TabLayout tabLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,13 +64,9 @@ public class ProfileFragment extends Fragment {
         imageViewReturn = view.findViewById(R.id.imageViewReturn);
         imageViewSignOut = view.findViewById(R.id.imageViewSignOut);
         imageViewPFP = view.findViewById(R.id.imageViewProfileImage);
-        imageViewButtonRead = view.findViewById(R.id.buttonRead);
-        imageViewButtonPending = view.findViewById(R.id.buttonPending);
-        imageViewButtonReading = view.findViewById(R.id.buttonReading);
-        imageViewButtonFavorite = view.findViewById(R.id.buttonFavorite);
         textViewProfileUsername = view.findViewById(R.id.textViewProfileUsername);
         frameLayout = view.findViewById(R.id.profile_fragment_container);
-
+        tabLayout = view.findViewById(R.id.tabLayout);
 
         imageViewReturn.setOnClickListener(v -> {
             if(getActivity() != null){
@@ -81,15 +78,46 @@ public class ProfileFragment extends Fragment {
         buttonChangePFP.setOnClickListener(v -> openFilePicker());
         buttonChangePassword.setOnClickListener(v -> ForgotPasswordFragment.sendRecoveryEMail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(),mAuth));
         //buttonChangeUsername.setOnClickListener(v -> SignUpFragment.saveUserData());
-        imageViewButtonRead.setOnClickListener(v -> openFragment(new ReadMangaFragment()));
-        imageViewButtonPending.setOnClickListener(v -> openFragment(new PendingMangaFragment()));
-        imageViewButtonReading.setOnClickListener(v -> openFragment(new ReadingMangaFragment()));
-        imageViewButtonFavorite.setOnClickListener(v -> openFragment(new FavoriteMangaFragment()));
+
+        //Tablayoout listener implementado
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment fragment = null;
+                switch (tab.getPosition()){
+                    case 0:
+                        fragment = new ReadMangaFragment();
+                        break;
+                    case 1:
+                        fragment = new PendingMangaFragment();
+                        break;
+                    case 2:
+                        fragment = new ReadingMangaFragment();
+                        break;
+                    case 3:
+                        fragment = new FavoriteMangaFragment();
+                        break;
+                }
+                if (fragment != null) {
+                    getChildFragmentManager().beginTransaction().replace(R.id.profile_fragment_container, fragment).commit();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) { }
+        });
+
+        if (savedInstanceState == null) {
+            Objects.requireNonNull(tabLayout.getTabAt(0)).select();
+            getChildFragmentManager().beginTransaction().replace(R.id.profile_fragment_container, new ReadMangaFragment()).commit();
+        }
 
         loadUsername(firestore, textViewProfileUsername);
         loadProfilePicture(firestore, imageViewPFP, getActivity());
 
-        // Handle back navigation and populate the activity
+        // Boton para atras
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -203,13 +231,6 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "Failed to load username", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void openFragment(Fragment fragment){
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.profile_fragment_container, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 
     private void signOut() {

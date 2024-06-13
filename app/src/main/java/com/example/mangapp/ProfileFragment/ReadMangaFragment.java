@@ -20,52 +20,48 @@ import com.example.mangapp.ApiResponse.MangaResponse;
 import com.example.mangapp.ApiService;
 import com.example.mangapp.DataBase.DatabaseHelper;
 import com.example.mangapp.DataBase.DatabaseManager;
-import com.example.mangapp.MangaAdapter;
-import com.example.mangapp.OnItemClickListener;
 import com.example.mangapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReadMangaFragment extends Fragment implements OnItemClickListener {
+public class ReadMangaFragment extends Fragment{
 
-    private FirebaseUser user;
     private ApiService apiService;
     private DatabaseManager databaseManager;
-    private RecyclerView recyclerView;
-    private MangaAdapter mangaAdapter;
-    private List<MangaData> mangaList = new ArrayList<>();
-    private List<String> mangaIds;
+    private MangaAdapterProfile mangaAdapter;
+    private final List<MangaData> mangaList = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_read_manga, container, false);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         apiService = ApiClient.getClient().create(ApiService.class);
         databaseManager = new DatabaseManager(getActivity());
         databaseManager.open();
 
-        recyclerView = view.findViewById(R.id.recyclerViewManga);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         fillMangaList(user);
-        Log.d("MANGALIST", String.valueOf(mangaList.size()));
 
-        mangaAdapter = new MangaAdapter(getActivity(), mangaList, this);
+        mangaAdapter = new MangaAdapterProfile(getActivity(), mangaList);
         recyclerView.setAdapter(mangaAdapter);
 
 
         Log.d("frag iniciado", "sdadasdsa");
 
-        getAllReadManga(user);
+        getAllReadManga(Objects.requireNonNull(user));
         return view;
     }
 
@@ -91,18 +87,6 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
         return mangaIds;
     }
 
-    @Override
-    public void onItemClick(MangaData manga) {
-        Toast.makeText(getActivity(), "Clicked: " + manga.getAttributes().getTitle().get("en"), Toast.LENGTH_SHORT).show();
-//        String coverId = null;
-//        for (MangaRelationship mangaRelationship : manga.getRelationships()) {
-//            if (mangaRelationship.getType().equals("cover_art")) {
-//                coverId = mangaRelationship.getId();
-//                break;
-//            }
-//        }
-// openMangaFragment(manga.getId(), coverId);
-    }
 
     private void getManga(String mangaId){
         Call<MangaResponse> call = apiService.getManga(mangaId);
@@ -128,12 +112,13 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
     }
 
     private void fillMangaList(FirebaseUser user){
-        mangaIds = getAllReadManga(user);
+        List<String> mangaIds = getAllReadManga(user);
         Log.d("FILL", String.valueOf(mangaIds.size()));
         for (String mangaId: mangaIds) {
             getManga(mangaId);
         }
     }
+
 
     @Override
     public void onDestroy() {
