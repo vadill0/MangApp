@@ -258,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(MangaData manga) {
-        // Handle the item click event, e.g., navigate to a detail screen
         Toast.makeText(this, "Clicked: " + manga.getAttributes().getTitle().get("en"), Toast.LENGTH_SHORT).show();
         String coverId = null;
         for (MangaRelationship mangaRelationship : manga.getRelationships()) {
