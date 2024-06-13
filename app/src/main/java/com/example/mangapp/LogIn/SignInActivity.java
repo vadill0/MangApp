@@ -276,11 +276,13 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
     }
 
     protected void addUserToDb(FirebaseUser user){
-        long insertUser = databaseManager.insertUser(user.getUid(), user.getEmail());
-        if(insertUser != -1){
-            Log.d(TAG_DB,"User added successfully");
-        }else{
-            Log.d(TAG_DB,"Error adding user");
+        if(!databaseManager.userExists(user.getUid())){
+            long insertUser = databaseManager.insertUser(user.getUid(), user.getEmail());
+            if(insertUser != -1){
+                Log.d(TAG_DB,"User added successfully");
+            }else{
+                Log.d(TAG_DB,"Error adding user");
+            }
         }
     }
 }

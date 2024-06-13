@@ -52,8 +52,23 @@ public class DatabaseManager {
      return database.query(TABLE_NAME, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
-    public Cursor getAllUsers() {
-        return database.query(DatabaseHelper.TABLE_USERS, null, null, null, null, null, null);
+    public Cursor getUser(String userId) {
+        return database.query(DatabaseHelper.TABLE_USERS, new String[]{DatabaseHelper.COLUMN_FB_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
+    }
+
+    public boolean userExists(String userId) {
+        Cursor cursor = null;
+        try {
+
+            cursor = database.query(DatabaseHelper.TABLE_USERS, new String[]{DatabaseHelper.COLUMN_FB_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
+
+            return cursor != null && cursor.getCount() > 0;
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     public boolean isMangaInList(String TABLE_NAME, String userId, String mangaId) {
