@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             }
         });
 
-        //Ocultacion para fragments
         //Ocultacion de botones de la activity en los fragments
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
         onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
@@ -31,6 +32,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
@@ -48,8 +52,11 @@ dependencies {
     implementation (libs.logging.interceptor)
     implementation (libs.firebase.database)
     implementation (libs.google.firebase.storage)
+    implementation (libs.firebase.appcheck.playintegrity)
+    implementation (libs.firebase.appcheck)
     implementation (libs.glide)
     implementation(libs.firebase.firestore)
+    implementation(libs.core.ktx)
     annotationProcessor (libs.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

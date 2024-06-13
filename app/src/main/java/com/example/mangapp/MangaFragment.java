@@ -2,7 +2,7 @@ package com.example.mangapp;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -43,6 +43,7 @@ public class MangaFragment extends Fragment {
     View mangaFragmentLayout;
     ImageView imageViewReturn, imageViewPFP, imageViewMangaCover, buttonRead, buttonPending, buttonReading, buttonFavorite;
     TextView textViewType, textViewMangaTitle, textViewMangaType, textViewMangaDescription;
+    Drawable originalBackgroundForListButtons;
 
     public MangaFragment(String mangaId, String coverId){
         this.MANGA_ID = mangaId;
@@ -74,6 +75,8 @@ public class MangaFragment extends Fragment {
         buttonFavorite = view.findViewById(R.id.buttonFavorite);
         buttonReading = view.findViewById(R.id.buttonReading);
 
+        originalBackgroundForListButtons = buttonRead.getBackground();
+
         textViewMangaDescription.setMaxLines(15);
         textViewMangaDescription.setEllipsize(TextUtils.TruncateAt.END);
 
@@ -91,10 +94,22 @@ public class MangaFragment extends Fragment {
         });
 
         imageViewPFP.setOnClickListener(v -> openProfileFragment());
-        buttonRead.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_READ, user, MANGA_ID));
-        buttonPending.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_PENDING, user, MANGA_ID));
-        buttonFavorite.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_FAVORITES, user, MANGA_ID));
-        buttonReading.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_READING, user, MANGA_ID));
+        buttonRead.setOnClickListener(v -> {
+            clickListButton(DatabaseHelper.TABLE_READ, user, MANGA_ID);
+            checkForList(user, MANGA_ID);
+        });
+        buttonPending.setOnClickListener(v -> {
+            clickListButton(DatabaseHelper.TABLE_PENDING, user, MANGA_ID);
+            checkForList(user, MANGA_ID);
+        });
+        buttonFavorite.setOnClickListener(v -> {
+            clickListButton(DatabaseHelper.TABLE_FAVORITES, user, MANGA_ID);
+            checkForList(user, MANGA_ID);
+        });
+        buttonReading.setOnClickListener(v -> {
+            clickListButton(DatabaseHelper.TABLE_READING, user, MANGA_ID);
+            checkForList(user, MANGA_ID);
+        });
 
         // Funcion para ir para atras y rellenar el activity
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -189,10 +204,10 @@ public class MangaFragment extends Fragment {
             whereIsTheManga = 3;
             buttonReading.setBackgroundColor(Color.rgb(47, 150, 180));
         }else{
-            buttonRead.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
-            buttonPending.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
-            buttonFavorite.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
-            buttonReading.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
+            buttonRead.setBackground(originalBackgroundForListButtons);
+            buttonPending.setBackground(originalBackgroundForListButtons);
+            buttonFavorite.setBackground(originalBackgroundForListButtons);
+            buttonReading.setBackground(originalBackgroundForListButtons);
         }
     }
 
@@ -229,6 +244,7 @@ public class MangaFragment extends Fragment {
                 break;
             default:
                 Log.d(TAG, "The manga isnt in a list");
+                addMangaToList(TABLE_NAME, user, mangaId);
                 break;
         }
     }

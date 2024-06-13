@@ -104,11 +104,7 @@ public class ProfileFragment extends Fragment {
 
     private void uploadImgToFirebase(Uri imageUri) {
         if (imageUri != null) {
-            String userId = FirebaseAuth.getInstance().getUid();
-            if (userId == null) {
-                Toast.makeText(getActivity(), "User not logged in", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
             StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile_pictures/" + userId + ".jpg");
             storageReference.putFile(imageUri)
@@ -122,11 +118,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void saveImgUrltoFirebase(String imageUrl) {
-        String userId = FirebaseAuth.getInstance().getUid();
-        if (userId == null) {
-            Toast.makeText(getActivity(), "User not logged in", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("profile_picture", imageUrl);
