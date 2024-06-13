@@ -23,6 +23,7 @@ import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaResponse;
 import com.example.mangapp.DataBase.DatabaseHelper;
 import com.example.mangapp.DataBase.DatabaseManager;
+import com.example.mangapp.ProfileFragment.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;

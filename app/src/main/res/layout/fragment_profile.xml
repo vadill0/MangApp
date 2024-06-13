@@ -5,7 +5,7 @@
     android:id="@+id/profileFragmentLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileFragment">
+    tools:context=".ProfileFragment.ProfileFragment">
 
     <!-- Other profile elements like profile image, name, etc. -->
 
@@ -22,7 +22,7 @@
         app:layout_constraintHorizontal_bias="0.777"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.222"
+        app:layout_constraintVertical_bias="0.204"
         tools:ignore="TextSizeCheck" />
 
     <Button
@@ -38,7 +38,23 @@
         app:layout_constraintHorizontal_bias="0.777"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.339"
+        app:layout_constraintVertical_bias="0.292"
+        tools:ignore="TextSizeCheck" />
+
+    <Button
+        android:id="@+id/buttonChangeUsername"
+        android:layout_width="159dp"
+        android:layout_height="48dp"
+        android:backgroundTint="#000000"
+        android:text="@string/change_username"
+        android:textSize="12sp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.777"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.377"
         tools:ignore="TextSizeCheck" />
 
     <ImageView

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaListResponse;
 import com.example.mangapp.ApiResponse.MangaRelationship;
+import com.example.mangapp.ProfileFragment.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
