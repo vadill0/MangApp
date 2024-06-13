@@ -1,5 +1,6 @@
 package com.example.mangapp.ProfileFragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -146,7 +147,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE_REQ && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null){
+        if(requestCode == PICK_IMAGE_REQ && resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
             Uri imageUri = data.getData();
             uploadImgToFirebase(imageUri);
         }

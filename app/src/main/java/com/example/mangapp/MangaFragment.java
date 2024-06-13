@@ -35,7 +35,6 @@ import retrofit2.Response;
 public class MangaFragment extends Fragment {
     private FirebaseUser user;
     private ApiService apiService;
-    private FirebaseFirestore firestore;
     private DatabaseManager databaseManager;
     private final String MANGA_ID, COVER_ID;
     private MangaData mangaData = null;
@@ -58,7 +57,7 @@ public class MangaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_manga, container, false);
 
         apiService = ApiClient.getClient().create(ApiService.class);
-        firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         databaseManager = new DatabaseManager(getActivity());
         databaseManager.open();

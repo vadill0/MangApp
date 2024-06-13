@@ -27,11 +27,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MangaAdapter extends RecyclerView.Adapter<MangaAdapter.MangaViewHolder> {
-    private List<MangaData> mangaList;
-    private Context context;
-    private ApiService apiService;
+    private final List<MangaData> mangaList;
+    private final Context context;
+    private final ApiService apiService;
     private static final String TAG = "APICALL";
-    private OnItemClickListener listener;
+    private final OnItemClickListener listener;
 
     public MangaAdapter(Context context, List<MangaData> mangaList, OnItemClickListener onItemClickListener) {
         this.context = context;

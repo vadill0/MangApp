@@ -40,8 +40,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements OnItemClickListener, MangaFragment.OnProfileButtonListener{
 
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore firestore;
     private ApiService apiService;
     private MangaAdapter mangaAdapter;
     private RecyclerView recyclerView;
@@ -68,9 +66,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             return insets;
         });
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
 
         apiService = ApiClient.getClient().create(ApiService.class);
