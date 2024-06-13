@@ -18,11 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mangapp.R;
-import com.example.mangapp.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpFragment extends Fragment {
 
@@ -32,8 +33,7 @@ public class SignUpFragment extends Fragment {
     ImageView imageViewReturn;
     Button buttonSignUp;
     private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
-
+    private FirebaseFirestore firestore;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -47,7 +47,7 @@ public class SignUpFragment extends Fragment {
         textViewVerificationNotSent = view.findViewById(R.id.textViewVerificationNotSent);
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        firestore = FirebaseFirestore.getInstance();
 
         buttonSignUp.setOnClickListener(v -> {
             String username, email, password, passwordVerify;
@@ -104,7 +104,7 @@ public class SignUpFragment extends Fragment {
                 Log.d(TAG, "createUserWithEmail:success");
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    saveUserData(user.getUid(), username);
+                    saveUserData(firestore, getActivity(), user.getUid(), username, user.getEmail());
                     sendEmail(user);
                     FirebaseAuth.getInstance().signOut();
                 }
@@ -153,17 +153,17 @@ public class SignUpFragment extends Fragment {
         }
     }
 
-    private void saveUserData(String userId, String username){
-        User user = new User(userId, username);
+    public static void saveUserData(FirebaseFirestore firestore, Context context, String userId, String username, String email) {
+        Map<String, Object> user = new HashMap<>();
+        user.put("username", username);
+        user.put("email", email);
 
-        mDatabase.child("users").child(userId).setValue(user)
+        firestore.collection("users").document(userId).set(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "User data saved successfully");
-                        Toast.makeText(getActivity(), "User registered successfully.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "User data saved", Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.w(TAG, "Failed to save user data", task.getException());
-                        Toast.makeText(getActivity(), "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Failed to save user data", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
