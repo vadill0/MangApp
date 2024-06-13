@@ -9,12 +9,12 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +47,7 @@ public class ProfileFragment extends Fragment {
     ImageView imageViewReturn, imageViewSignOut, imageViewPFP;
     TextView textViewProfileUsername;
     TabLayout tabLayout;
-    ViewPager2 viewPager;
+    FrameLayout frameLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,14 +65,15 @@ public class ProfileFragment extends Fragment {
         imageViewSignOut = view.findViewById(R.id.imageViewSignOut);
         imageViewPFP = view.findViewById(R.id.imageViewProfileImage);
         textViewProfileUsername = view.findViewById(R.id.textViewProfileUsername);
-        tabLayout = view.findViewById(R.id.tabLayout);
-        viewPager = view.findViewById(R.id.viewPager);
+        frameLayout = view.findViewById(R.id.profile_tab_fragment_container);
+
 
         imageViewReturn.setOnClickListener(v -> {
             if(getActivity() != null){
                 getActivity().getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
         imageViewSignOut.setOnClickListener(v -> signOut());
         buttonChangePFP.setOnClickListener(v -> openFilePicker());
         buttonChangePassword.setOnClickListener(v -> ForgotPasswordFragment.sendRecoveryEMail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(),mAuth));
@@ -81,7 +82,6 @@ public class ProfileFragment extends Fragment {
         loadUsername(firestore, textViewProfileUsername);
         loadProfilePicture(firestore, imageViewPFP, getActivity());
 
-        setupViewPagerAndTabs();
         // Handle back navigation and populate the activity
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -188,11 +188,7 @@ public class ProfileFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     String username = document.getString("username");
-                    if (username != null) {
-                        textViewProfileUsername.setText(username);
-                    } else {
-                        textViewProfileUsername.setText("Username not available");
-                    }
+                    textViewProfileUsername.setText(username != null ? username : "Username not available");
                 } else {
                     textViewProfileUsername.setText("User document does not exist");
                 }
@@ -202,35 +198,6 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    private void setupViewPagerAndTabs() {
-        ProfilePagerAdapter profilePagerAdapter = new ProfilePagerAdapter(this);
-        viewPager.setAdapter(profilePagerAdapter);
-
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tab 4"));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) { }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) { }
-        });
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                tabLayout.selectTab(tabLayout.getTabAt(position));
-            }
-        });
-    }
 
     private void signOut() {
         mAuth.signOut();

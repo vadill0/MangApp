@@ -12,11 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mangapp.ApiClient;
 import com.example.mangapp.ApiResponse.MangaData;
-import com.example.mangapp.ApiResponse.MangaRelationship;
 import com.example.mangapp.ApiResponse.MangaResponse;
 import com.example.mangapp.ApiService;
 import com.example.mangapp.DataBase.DatabaseHelper;
@@ -41,8 +41,9 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
     private DatabaseManager databaseManager;
     private RecyclerView recyclerView;
     private MangaAdapter mangaAdapter;
-    private List<MangaData> mangaList;
+    private List<MangaData> mangaList = new ArrayList<>();
     private List<String> mangaIds;
+    TextView textView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,10 +58,14 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
         recyclerView = view.findViewById(R.id.recyclerViewManga);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+
         mangaAdapter = new MangaAdapter(getActivity(), mangaList, this);
         recyclerView.setAdapter(mangaAdapter);
+        textView = view.findViewById(R.id.textView3);
 
-        mangaIds = getAllReadManga(user);
+        textView.setText("hola");
+        fillMangaList(user);
+
 
         return view;
     }
@@ -92,14 +97,14 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onItemClick(MangaData manga) {
         Toast.makeText(getActivity(), "Clicked: " + manga.getAttributes().getTitle().get("en"), Toast.LENGTH_SHORT).show();
-        String coverId = null;
-        for (MangaRelationship mangaRelationship : manga.getRelationships()) {
-            if (mangaRelationship.getType().equals("cover_art")) {
-                coverId = mangaRelationship.getId();
-                break;
-            }
-        }
-        //openMangaFragment(manga.getId(), coverId);
+//        String coverId = null;
+//        for (MangaRelationship mangaRelationship : manga.getRelationships()) {
+//            if (mangaRelationship.getType().equals("cover_art")) {
+//                coverId = mangaRelationship.getId();
+//                break;
+//            }
+//        }
+// openMangaFragment(manga.getId(), coverId);
     }
 
     private void getManga(String mangaId){
@@ -108,22 +113,25 @@ public class ReadMangaFragment extends Fragment implements OnItemClickListener {
         call.enqueue(new Callback<MangaResponse>() {
             @Override
             public void onResponse(@NonNull Call<MangaResponse> call, @NonNull Response<MangaResponse> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        mangaList.add(response.body().getData());
-                    }
-                    Log.d("APICALL","SUCCESS");
+                if (response.isSuccessful() && response.body() != null) {
+                    mangaList.add(response.body().getData());
+                    mangaAdapter.notifyDataSetChanged();
                 } else {
-                    // Handle the error
-                    Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),"Error in response",Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MangaResponse> call, @NonNull Throwable t) {
-                // Handle the failure
-                Log.e("APICALL", String.valueOf(t.getCause()));
+                Toast.makeText(getActivity(),"API call failed",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void fillMangaList(FirebaseUser user){
+        mangaIds = getAllReadManga(user);
+        for (String mangaId: mangaIds) {
+            getManga(mangaId);
+        }
     }
 }

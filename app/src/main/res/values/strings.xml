@@ -44,4 +44,8 @@
     <string name="change_profile_picture">Change profile picture</string>
     <string name="change_password">Change password</string>
     <string name="change_username">Change username</string>
+    <string name="read_manga">Read manga</string>
+    <string name="pending_manga">Pending manga</string>
+    <string name="reading_manga">Reading manga</string>
+    <string name="favorite_manga">Favorite manga</string>
 </resources>
