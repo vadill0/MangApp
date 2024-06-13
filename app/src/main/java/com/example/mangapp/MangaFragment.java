@@ -1,6 +1,8 @@
 package com.example.mangapp;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -19,6 +21,10 @@ import android.widget.Toast;
 
 import com.example.mangapp.ApiResponse.MangaData;
 import com.example.mangapp.ApiResponse.MangaResponse;
+import com.example.mangapp.DataBase.DatabaseHelper;
+import com.example.mangapp.DataBase.DatabaseManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import retrofit2.Call;
@@ -26,11 +32,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MangaFragment extends Fragment {
+    private FirebaseUser user;
     private ApiService apiService;
     private FirebaseFirestore firestore;
+    private DatabaseManager databaseManager;
     private final String MANGA_ID, COVER_ID;
     private MangaData mangaData = null;
-    ImageView imageViewReturn, imageViewPFP, imageViewMangaCover;
+    private int whereIsTheManga = -1;
+    private final String TAG = "MangaAddMethod";
+    View mangaFragmentLayout;
+    ImageView imageViewReturn, imageViewPFP, imageViewMangaCover, buttonRead, buttonPending, buttonReading, buttonFavorite;
     TextView textViewType, textViewMangaTitle, textViewMangaType, textViewMangaDescription;
 
     public MangaFragment(String mangaId, String coverId){
@@ -46,7 +57,11 @@ public class MangaFragment extends Fragment {
 
         apiService = ApiClient.getClient().create(ApiService.class);
         firestore = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        databaseManager = new DatabaseManager(getActivity());
+        databaseManager.open();
 
+        mangaFragmentLayout = view.findViewById(R.id.mangaFragmentLayout);
         imageViewReturn = view.findViewById(R.id.imageViewReturn);
         imageViewPFP = view.findViewById(R.id.imageViewPFP);
         imageViewMangaCover = view.findViewById(R.id.imageViewMangaCover);
@@ -54,6 +69,10 @@ public class MangaFragment extends Fragment {
         textViewMangaTitle = view.findViewById(R.id.textViewMangaTitle);
         textViewMangaType = view.findViewById(R.id.textViewMangaType);
         textViewMangaDescription = view.findViewById(R.id.textViewMangaDescription);
+        buttonRead = view.findViewById(R.id.buttonRead);
+        buttonPending = view.findViewById(R.id.buttonPending);
+        buttonFavorite = view.findViewById(R.id.buttonFavorite);
+        buttonReading = view.findViewById(R.id.buttonReading);
 
         textViewMangaDescription.setMaxLines(15);
         textViewMangaDescription.setEllipsize(TextUtils.TruncateAt.END);
@@ -61,6 +80,9 @@ public class MangaFragment extends Fragment {
         getManga(MANGA_ID);
         MangaAdapter.loadCoverImage(COVER_ID, imageViewMangaCover, MANGA_ID, apiService, getActivity());
         textViewMangaType.setWidth(imageViewMangaCover.getWidth());
+        ProfileFragment.loadProfilePicture(firestore, imageViewPFP,getActivity());
+        checkForList(user, MANGA_ID);
+
         //Funciones OnClick
         imageViewReturn.setOnClickListener(v ->{
             if (getActivity() != null) {
@@ -68,9 +90,11 @@ public class MangaFragment extends Fragment {
             }
         });
 
-        ProfileFragment.loadProfilePicture(firestore, imageViewPFP,getActivity());
-
         imageViewPFP.setOnClickListener(v -> openProfileFragment());
+        buttonRead.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_READ, user, MANGA_ID));
+        buttonPending.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_PENDING, user, MANGA_ID));
+        buttonFavorite.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_FAVORITES, user, MANGA_ID));
+        buttonReading.setOnClickListener(v -> clickListButton(DatabaseHelper.TABLE_READING, user, MANGA_ID));
 
         // Funcion para ir para atras y rellenar el activity
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
@@ -151,4 +175,70 @@ public class MangaFragment extends Fragment {
         }
     }
 
+    private void checkForList(FirebaseUser user, String mangaId){
+        if(databaseManager.isMangaInList(DatabaseHelper.TABLE_READ, user.getUid(), mangaId)){
+            whereIsTheManga = 0;
+            buttonRead.setBackgroundColor(Color.rgb(24, 117, 69));
+        } else if (databaseManager.isMangaInList(DatabaseHelper.TABLE_PENDING, user.getUid(), mangaId)) {
+            whereIsTheManga = 1;
+            buttonPending.setBackgroundColor(Color.rgb(248, 148, 6));
+        } else if (databaseManager.isMangaInList(DatabaseHelper.TABLE_FAVORITES, user.getUid(), mangaId)) {
+            whereIsTheManga = 2;
+            buttonFavorite.setBackgroundColor(Color.rgb(156, 38, 38));
+        } else if (databaseManager.isMangaInList(DatabaseHelper.TABLE_READING, user.getUid(), mangaId)) {
+            whereIsTheManga = 3;
+            buttonReading.setBackgroundColor(Color.rgb(47, 150, 180));
+        }else{
+            buttonRead.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
+            buttonPending.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
+            buttonFavorite.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
+            buttonReading.setBackgroundColor(((ColorDrawable) mangaFragmentLayout.getBackground()).getColor());
+        }
+    }
+
+    private void clickListButton(String TABLE_NAME, FirebaseUser user, String mangaId) {
+        boolean result;
+        switch (whereIsTheManga){
+            case 0:
+                result = databaseManager.deleteMangaFromList(DatabaseHelper.TABLE_READ, user.getUid(), mangaId);
+                Log.d(TAG, "Manga deleted from readList" + result);
+                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_READ)){
+                    addMangaToList(TABLE_NAME, user, mangaId);
+                }
+                break;
+            case 1:
+                result = databaseManager.deleteMangaFromList(DatabaseHelper.TABLE_PENDING, user.getUid(), mangaId);
+                Log.d(TAG, "Manga deleted from pendingList" + result);
+                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_PENDING)){
+                    addMangaToList(TABLE_NAME, user, mangaId);
+                }
+                break;
+            case 2:
+                result = databaseManager.deleteMangaFromList(DatabaseHelper.TABLE_FAVORITES, user.getUid(), mangaId);
+                Log.d(TAG, "Manga deleted from favoritesList" + result);
+                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_PENDING)){
+                    addMangaToList(TABLE_NAME, user, mangaId);
+                }
+                break;
+            case 3:
+                result = databaseManager.deleteMangaFromList(DatabaseHelper.TABLE_READING, user.getUid(), mangaId);
+                Log.d(TAG, "Manga deleted from readingList" + result);
+                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_PENDING)){
+                    addMangaToList(TABLE_NAME, user, mangaId);
+                }
+                break;
+            default:
+                Log.d(TAG, "The manga isnt in a list");
+                break;
+        }
+    }
+
+    private void addMangaToList(String TABLE_NAME, FirebaseUser user, String mangaId){
+        long insertManga = databaseManager.insertManga(TABLE_NAME, user.getUid(), mangaId);
+        if(insertManga != -1){
+            Log.d(TAG,"Manga added to " + TABLE_NAME + " successfully");
+        }else{
+            Log.e(TAG,"Error adding manga to table");
+        }
+    }
 }

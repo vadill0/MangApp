@@ -28,53 +28,55 @@ public class DatabaseManager {
         return database.insert(DatabaseHelper.TABLE_USERS, null, values);
     }
 
-    public long insertReadManga(String mangaId, String userId){
+    public long insertManga(String TABLE_NAME, String mangaId, String userId){
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COLUMN_MANGA_ID, mangaId);
         values.put(DatabaseHelper.COLUMN_FB_ID, userId);
-        return database.insert(DatabaseHelper.TABLE_READ, null, values);
+        return database.insert(TABLE_NAME, null, values);
     }
 
-    public long insertPendingManga(String mangaId, String userId){
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_MANGA_ID, mangaId);
-        values.put(DatabaseHelper.COLUMN_FB_ID, userId);
-        return database.insert(DatabaseHelper.TABLE_PENDING, null, values);
+    public boolean deleteMangaFromList(String TABLE_NAME, String userId, String mangaId) {
+        // Define the where clause and where arguments
+        String whereClause = DatabaseHelper.COLUMN_FB_ID + "=? AND " + DatabaseHelper.COLUMN_MANGA_ID + "=?";
+        String[] whereArgs = new String[]{userId, mangaId};
+
+        // Execute the delete command
+        int rowsDeleted = database.delete(TABLE_NAME, whereClause, whereArgs);
+
+        // Return true if at least one row was deleted
+        return rowsDeleted > 0;
     }
 
-    public long insertFavoriteManga(String mangaId, String userId){
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_MANGA_ID, mangaId);
-        values.put(DatabaseHelper.COLUMN_FB_ID, userId);
-        return database.insert(DatabaseHelper.TABLE_FAVORITES, null, values);
-    }
 
-    public long insertReadingManga(String mangaId, String userId){
-        ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_MANGA_ID, mangaId);
-        values.put(DatabaseHelper.COLUMN_FB_ID, userId);
-        return database.insert(DatabaseHelper.TABLE_READING, null, values);
-    }
-
-    public Cursor getReadMangaFromUser(String userId){
-     return database.query(DatabaseHelper.TABLE_READ, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
-    }
-
-    public Cursor getPendingMangaFromUser(String userId){
-        return database.query(DatabaseHelper.TABLE_PENDING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
-    }
-
-    public Cursor getFavoriteMangaFromUser(String userId){
-        return database.query(DatabaseHelper.TABLE_FAVORITES, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
-    }
-
-    public Cursor getReadingMangaFromUser(String userId){
-        return database.query(DatabaseHelper.TABLE_READING, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
+    public Cursor getMangaFromUser(String TABLE_NAME, String userId){
+     return database.query(TABLE_NAME, new String[]{DatabaseHelper.COLUMN_MANGA_ID}, DatabaseHelper.COLUMN_FB_ID + "=?", new String[]{userId}, null, null, null);
     }
 
     public Cursor getAllUsers() {
         return database.query(DatabaseHelper.TABLE_USERS, null, null, null, null, null, null);
     }
 
+    public boolean isMangaInList(String TABLE_NAME, String userId, String mangaId) {
+        Cursor cursor = null;
+        try {
+
+            cursor = database.query(
+                    TABLE_NAME,
+                    new String[]{DatabaseHelper.COLUMN_MANGA_ID},
+                    DatabaseHelper.COLUMN_FB_ID + "=? AND " + DatabaseHelper.COLUMN_MANGA_ID + "=?",
+                    new String[]{userId, mangaId},
+                    null,
+                    null,
+                    null
+            );
+
+            return cursor != null && cursor.getCount() > 0;
+        } finally {
+
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
 
 }
