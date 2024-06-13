@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class DatabaseManager {
     private DatabaseHelper dbHelper;
@@ -28,13 +29,19 @@ public class DatabaseManager {
         return database.insert(DatabaseHelper.TABLE_USERS, null, values);
     }
 
-    public long insertManga(String TABLE_NAME, String mangaId, String userId){
+    public long insertManga(String TABLE_NAME, String userId, String mangaId){
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COLUMN_MANGA_ID, mangaId);
         values.put(DatabaseHelper.COLUMN_FB_ID, userId);
-        return database.insert(TABLE_NAME, null, values);
+        values.put(DatabaseHelper.COLUMN_MANGA_ID, mangaId);
+        long result = -1;
+        try {
+            result = database.insert(TABLE_NAME, null, values);
+            Log.d("DatabaseManager", "Insert result: " + result);
+        } catch (Exception e) {
+            Log.e("DatabaseManager", "Error inserting manga", e);
+        }
+        return result;
     }
-
     public boolean deleteMangaFromList(String TABLE_NAME, String userId, String mangaId) {
         // Define the where clause and where arguments
         String whereClause = DatabaseHelper.COLUMN_FB_ID + "=? AND " + DatabaseHelper.COLUMN_MANGA_ID + "=?";

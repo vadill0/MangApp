@@ -93,6 +93,10 @@ public class MangaFragment extends Fragment {
             }
         });
 
+        boolean esta = databaseManager.isMangaInList(DatabaseHelper.TABLE_READ, user.getUid(), MANGA_ID);
+
+        Log.d("MANGAEXISTEENLALISTA", String.valueOf(esta));
+
         imageViewPFP.setOnClickListener(v -> openProfileFragment());
         buttonRead.setOnClickListener(v -> {
             clickListButton(DatabaseHelper.TABLE_READ, user, MANGA_ID);
@@ -194,15 +198,27 @@ public class MangaFragment extends Fragment {
         if(databaseManager.isMangaInList(DatabaseHelper.TABLE_READ, user.getUid(), mangaId)){
             whereIsTheManga = 0;
             buttonRead.setBackgroundColor(Color.rgb(24, 117, 69));
+            buttonPending.setBackground(originalBackgroundForListButtons);
+            buttonFavorite.setBackground(originalBackgroundForListButtons);
+            buttonReading.setBackground(originalBackgroundForListButtons);
         } else if (databaseManager.isMangaInList(DatabaseHelper.TABLE_PENDING, user.getUid(), mangaId)) {
             whereIsTheManga = 1;
             buttonPending.setBackgroundColor(Color.rgb(248, 148, 6));
+            buttonRead.setBackground(originalBackgroundForListButtons);
+            buttonFavorite.setBackground(originalBackgroundForListButtons);
+            buttonReading.setBackground(originalBackgroundForListButtons);
         } else if (databaseManager.isMangaInList(DatabaseHelper.TABLE_FAVORITES, user.getUid(), mangaId)) {
             whereIsTheManga = 2;
             buttonFavorite.setBackgroundColor(Color.rgb(156, 38, 38));
+            buttonRead.setBackground(originalBackgroundForListButtons);
+            buttonPending.setBackground(originalBackgroundForListButtons);
+            buttonReading.setBackground(originalBackgroundForListButtons);
         } else if (databaseManager.isMangaInList(DatabaseHelper.TABLE_READING, user.getUid(), mangaId)) {
             whereIsTheManga = 3;
             buttonReading.setBackgroundColor(Color.rgb(47, 150, 180));
+            buttonRead.setBackground(originalBackgroundForListButtons);
+            buttonPending.setBackground(originalBackgroundForListButtons);
+            buttonFavorite.setBackground(originalBackgroundForListButtons);
         }else{
             buttonRead.setBackground(originalBackgroundForListButtons);
             buttonPending.setBackground(originalBackgroundForListButtons);
@@ -231,14 +247,14 @@ public class MangaFragment extends Fragment {
             case 2:
                 result = databaseManager.deleteMangaFromList(DatabaseHelper.TABLE_FAVORITES, user.getUid(), mangaId);
                 Log.d(TAG, "Manga deleted from favoritesList" + result);
-                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_PENDING)){
+                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_FAVORITES)){
                     addMangaToList(TABLE_NAME, user, mangaId);
                 }
                 break;
             case 3:
                 result = databaseManager.deleteMangaFromList(DatabaseHelper.TABLE_READING, user.getUid(), mangaId);
                 Log.d(TAG, "Manga deleted from readingList" + result);
-                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_PENDING)){
+                if(!TABLE_NAME.equals(DatabaseHelper.TABLE_READING)){
                     addMangaToList(TABLE_NAME, user, mangaId);
                 }
                 break;
@@ -256,5 +272,11 @@ public class MangaFragment extends Fragment {
         }else{
             Log.e(TAG,"Error adding manga to table");
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        databaseManager.close();
     }
 }
