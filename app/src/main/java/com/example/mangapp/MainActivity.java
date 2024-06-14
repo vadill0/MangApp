@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     // Show all views again when no fragment is in the stack
                     for (View view : mainViews) {
                         view.setVisibility(View.VISIBLE);
+                        ProfileFragment.loadProfilePicture(firestore, imageViewPFP, view.getContext());
                     }
                     fragmentContainer.setVisibility(View.GONE);
                     if (fm.getBackStackEntryCount() > 0) {
