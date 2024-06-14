@@ -29,6 +29,7 @@ import com.example.mangapp.MainActivity;
 import com.example.mangapp.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +44,7 @@ import java.util.Objects;
 public class ProfileFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
+    private FirebaseUser user;
     private static final int PICK_IMAGE_REQ = 1;
     Button buttonChangePFP, buttonChangePassword, buttonChangeUsername;
     ImageView imageViewReturn, imageViewSignOut, imageViewPFP;
@@ -58,6 +60,7 @@ public class ProfileFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        user = mAuth.getCurrentUser();
 
         buttonChangePFP = view.findViewById(R.id.buttonChangePFP);
         buttonChangePassword = view.findViewById(R.id.buttonChangePassword);
@@ -75,6 +78,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        loadUsername(firestore, textViewProfileUsername);
+        loadProfilePicture(firestore, imageViewPFP, getActivity());
         imageViewSignOut.setOnClickListener(v -> signOut());
         buttonChangePFP.setOnClickListener(v -> openFilePicker());
         buttonChangePassword.setOnClickListener(v -> ForgotPasswordFragment.sendRecoveryEMail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(),mAuth));
@@ -115,9 +120,6 @@ public class ProfileFragment extends Fragment {
             getChildFragmentManager().beginTransaction().replace(R.id.profile_fragment_container, new ReadMangaFragment()).commit();
         }
 
-        loadUsername(firestore, textViewProfileUsername);
-        loadProfilePicture(firestore, imageViewPFP, getActivity());
-
         // Boton para atras
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
@@ -149,27 +151,27 @@ public class ProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == PICK_IMAGE_REQ && resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
             Uri imageUri = data.getData();
-            uploadImgToFirebase(imageUri);
+            uploadImgToFirebase(user, imageUri);
         }
     }
 
-    private void uploadImgToFirebase(Uri imageUri) {
+    private void uploadImgToFirebase(FirebaseUser user, Uri imageUri) {
         if (imageUri != null) {
-            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+            String userId = Objects.requireNonNull(user).getUid();
 
             StorageReference storageReference = FirebaseStorage.getInstance().getReference("profile_pictures/" + userId + ".jpg");
             storageReference.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                         String downloadUri = uri.toString();
-                        saveImgUrltoFirebase(downloadUri);
+                        saveImgUrltoFirebase(user, downloadUri);
                         Toast.makeText(getActivity(), "File uploaded", Toast.LENGTH_SHORT).show();
                     }))
                     .addOnFailureListener(e -> Toast.makeText(getActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
     }
 
-    private void saveImgUrltoFirebase(String imageUrl) {
-        String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+    private void saveImgUrltoFirebase(FirebaseUser user, String imageUrl) {
+        String userId = Objects.requireNonNull(user).getUid();
 
 
         Map<String, Object> updates = new HashMap<>();
@@ -203,7 +205,8 @@ public class ProfileFragment extends Fragment {
                     if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
                         Glide.with(context)
                                 .load(profilePictureUrl)
-                                .apply(new RequestOptions().placeholder(R.drawable.profileicon29).error(R.drawable.profileicon29).apply(RequestOptions.bitmapTransform(new RoundedCorners(100))))
+                                .apply(new RequestOptions().placeholder(R.drawable.profileicon29).error(R.drawable.profileicon29)
+                                .apply(RequestOptions.bitmapTransform(new RoundedCorners(100))))
                                 .into(imageViewPFP);
                     }
                 }

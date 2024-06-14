@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private boolean titleBeingSearched = false;
     private String titleSearched = null;
 
+    private boolean isLastPage = false;
+    private static final int PAGE_SIZE = 10;
+
     View[] mainViews;
     View fragmentContainer;
     SearchView searchView;
@@ -89,32 +92,31 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         mainViews = new View[]{searchView, imageViewPreviousPage, imageViewNextPage, recyclerView, imageViewPFP};
 
+        imageViewNextPage.setEnabled(false);
+
         imageViewPreviousPage.setOnClickListener(v -> {
-            if (offsetCounter - 10 >= 0) {
-                if(titleBeingSearched){
-                    mangaList.clear();
-                    offsetCounter -= 10;
+            if (offsetCounter - PAGE_SIZE >= 0) {
+                mangaList.clear();
+                offsetCounter -= PAGE_SIZE;
+                if (titleBeingSearched) {
                     getMangaList(titleSearched, offsetCounter);
-                    recyclerView.scrollToPosition(0);
-                }else{
-                    mangaList.clear();
-                    offsetCounter -= 10;
+                } else {
                     getMangaList(offsetCounter);
-                    recyclerView.scrollToPosition(0);
                 }
+                recyclerView.scrollToPosition(0);
             }
+            imageViewPreviousPage.setEnabled(offsetCounter > 0);
         });
 
         imageViewNextPage.setOnClickListener(v -> {
-            if(titleBeingSearched){
+            if (!isLastPage) {
                 mangaList.clear();
-                offsetCounter += 10;
-                getMangaList(titleSearched, offsetCounter);
-                recyclerView.scrollToPosition(0);
-            }else{
-                mangaList.clear();
-                offsetCounter += 10;
-                getMangaList(offsetCounter);
+                offsetCounter += PAGE_SIZE;
+                if (titleBeingSearched) {
+                    getMangaList(titleSearched, offsetCounter);
+                } else {
+                    getMangaList(offsetCounter);
+                }
                 recyclerView.scrollToPosition(0);
             }
         });
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             public boolean onQueryTextSubmit(String query) {
                 if(query.isEmpty()){
                     titleBeingSearched = false;
+                    getMangaList(0);
                 }else{
                     mangaList.clear();
                     getMangaList(query);
@@ -143,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             public boolean onQueryTextChange(String newText) {
                 if(newText.isEmpty()){
                     titleBeingSearched = false;
+                    mangaList.clear(); // Clear the current list
+                    getMangaList(0); // Call getMangaList(0) when text is cleared
+                    recyclerView.scrollToPosition(0);
                 }
                 return true;
             }
@@ -175,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
 
-    private void getMangaList(int offset){
+    private void getMangaList(int offset) {
         Call<MangaListResponse> call = apiService.getMangaList(offset);
 
         call.enqueue(new Callback<MangaListResponse>() {
@@ -183,19 +189,20 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             public void onResponse(@NonNull Call<MangaListResponse> call, @NonNull Response<MangaListResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        mangaList.addAll(response.body().getData());
+                        List<MangaData> data = response.body().getData();
+                        mangaList.addAll(data);
                         mangaAdapter.notifyDataSetChanged();
+                        isLastPage = data.size() < PAGE_SIZE;
+                        imageViewNextPage.setEnabled(!isLastPage);
                     }
-                    Log.d("APICALL","SUCCESS");
+                    Log.d("APICALL", "SUCCESS");
                 } else {
-                    // Handle the error
-                    Toast.makeText(MainActivity.this,"error",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
-                // Handle the failure
                 Log.e("APICALL", String.valueOf(t.getCause()));
             }
         });
@@ -227,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         });
     }
 
-    private void getMangaList(String title, int offset){
+    private void getMangaList(String title, int offset) {
         Call<MangaListResponse> call = apiService.getMangaList(title, offset);
 
         call.enqueue(new Callback<MangaListResponse>() {
@@ -235,24 +242,24 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             public void onResponse(@NonNull Call<MangaListResponse> call, @NonNull Response<MangaListResponse> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        mangaList.addAll(response.body().getData());
+                        List<MangaData> data = response.body().getData();
+                        mangaList.addAll(data);
                         mangaAdapter.notifyDataSetChanged();
+                        isLastPage = data.size() < PAGE_SIZE;
+                        imageViewNextPage.setEnabled(!isLastPage);
                     }
-                    Log.d("APICALL","SUCCESS");
+                    Log.d("APICALL", "SUCCESS");
                 } else {
-                    // Handle the error
-                    Toast.makeText(MainActivity.this,"error",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "error", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MangaListResponse> call, @NonNull Throwable t) {
-                // Handle the failure
                 Log.e("APICALL", String.valueOf(t.getCause()));
             }
         });
     }
-
 
     @Override
     public void onItemClick(MangaData manga) {

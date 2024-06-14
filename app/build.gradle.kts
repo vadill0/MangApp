@@ -56,6 +56,7 @@ dependencies {
     implementation (libs.firebase.appcheck)
     implementation (libs.glide)
     implementation(libs.firebase.firestore)
+    implementation (libs.google.firebase.appcheck.v1600beta01)
     implementation(libs.core.ktx)
     annotationProcessor (libs.compiler)
     testImplementation(libs.junit)

@@ -72,6 +72,7 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
             return insets;
         });
 
+
         //Iniciar la instancia de FB
         mAuth = FirebaseAuth.getInstance();
 
