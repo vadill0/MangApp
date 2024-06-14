@@ -78,7 +78,7 @@ public class ProfileFragment extends Fragment {
         imageViewSignOut.setOnClickListener(v -> signOut());
         buttonChangePFP.setOnClickListener(v -> openFilePicker());
         buttonChangePassword.setOnClickListener(v -> ForgotPasswordFragment.sendRecoveryEMail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(),mAuth));
-        //buttonChangeUsername.setOnClickListener(v -> SignUpFragment.saveUserData());
+        buttonChangeUsername.setOnClickListener(v -> openChangeUsernameDialogFragment());
 
         //Tablayoout listener implementado
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -232,6 +232,11 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "Failed to load username", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void openChangeUsernameDialogFragment(){
+        ChangeUsernameFragment changeUsernameFragment = new ChangeUsernameFragment();
+        changeUsernameFragment.show(getChildFragmentManager(),"Change Username");
     }
 
     private void signOut() {

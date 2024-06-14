@@ -132,7 +132,7 @@
         android:layout_width="233dp"
         android:layout_height="68dp"
         android:contentDescription="@string/title"
-        android:fontFamily="@font/gelline"
+        android:fontFamily="@font/allerta_stencil"
         android:text="@string/mangapp"
         android:textAlignment="center"
         android:textColor="#101010"
