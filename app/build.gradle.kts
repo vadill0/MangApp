@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.auth)
+    implementation(libs.firebase.analytics)
     implementation(libs.play.services.auth)
     implementation (libs.retrofit2.retrofit)
     implementation (libs.converter.gson)
