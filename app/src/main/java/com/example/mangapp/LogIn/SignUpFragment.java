@@ -41,7 +41,7 @@ public class SignUpFragment extends Fragment {
         buttonSignUp = view.findViewById(R.id.buttonSignUp);
         editTextEmailRecovery = view.findViewById(R.id.editTextEmailSU);
         editTextPassword = view.findViewById(R.id.editTextPasswordSU);
-        editTextUser = view.findViewById(R.id.editTextUser);
+        editTextUser = view.findViewById(R.id.editTextUserSU);
         editTextPasswordVerify = view.findViewById(R.id.editTextPasswordVerifySU);
         imageViewReturn = view.findViewById(R.id.imageViewReturn);
         textViewVerificationNotSent = view.findViewById(R.id.textViewVerificationNotSent);

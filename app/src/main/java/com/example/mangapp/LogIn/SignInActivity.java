@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,9 +49,10 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
     View fragmentContainer; //Frame container
 
     //Declaracion de las variables para los controles usados
-    TextView textViewSign, textViewForgotPass, textView;//debug
+    TextView textViewSignUp, textViewSignIn, textViewForgotPass, textViewTitle;
+    ImageView imageViewTitle;
     EditText editTextEmail, editTextPassword;
-    Button buttonSend, buttonGoogle;
+    Button buttonSignIn, buttonGoogle;
     Intent intent;
 
     @Override
@@ -88,24 +90,25 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
 
         //Asignacion de las variables a los controles
         fragmentContainer = findViewById(R.id.fragment_container);
+        imageViewTitle = findViewById(R.id.imageViewTitle);
+        textViewTitle = findViewById(R.id.textViewTitle);
+        textViewSignIn = findViewById(R.id.textViewSignIn);
         editTextEmail = findViewById(R.id.editTextEmailSignIn);
         editTextPassword = findViewById(R.id.editTextPasswordSignIn);
-        buttonSend = findViewById(R.id.buttonSignIn);
-        textViewSign = findViewById(R.id.textViewSign);
+        buttonSignIn = findViewById(R.id.buttonSignIn);
+        textViewSignUp = findViewById(R.id.textViewSignUp);
         buttonGoogle = findViewById(R.id.buttonGoogle);
         textViewForgotPass = findViewById(R.id.textViewForgotPass);
 
         //Views de la main activity
-        mainViews = new View[]{editTextEmail, editTextPassword,
-                buttonSend, buttonGoogle,
-                textViewSign, textViewForgotPass
+        mainViews = new View[]{imageViewTitle, textViewTitle, textViewSignIn, editTextEmail, editTextPassword,
+                buttonSignIn, buttonGoogle,
+                textViewSignUp, textViewForgotPass
         };
 
 
-        textView = findViewById(R.id.textView);//debug
-
         //Funcion onClick para el boton
-        buttonSend.setOnClickListener((View v) -> {
+        buttonSignIn.setOnClickListener((View v) -> {
             //Recogida de credenciales
             String email = editTextEmail.getText().toString();
             String password = editTextPassword.getText().toString();
@@ -122,7 +125,7 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
 
         buttonGoogle.setOnClickListener((View v)-> signInWithGoogle());
 
-        textViewSign.setOnClickListener((View v) -> openSignUpFragment());
+        textViewSignUp.setOnClickListener((View v) -> openSignUpFragment());
         textViewForgotPass.setOnClickListener((View v) -> openForgotPassFragment());
 
         //Ocultacion de botones de la activity en los fragments
