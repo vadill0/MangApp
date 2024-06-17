@@ -80,6 +80,7 @@ public class ProfileFragment extends Fragment {
 
         loadUsername(firestore, textViewProfileUsername);
         loadProfilePicture(firestore, imageViewPFP, getActivity());
+
         imageViewSignOut.setOnClickListener(v -> signOut());
         buttonChangePFP.setOnClickListener(v -> openFilePicker());
         buttonChangePassword.setOnClickListener(v -> ForgotPasswordFragment.sendRecoveryEMail(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail(),mAuth));
@@ -229,7 +230,7 @@ public class ProfileFragment extends Fragment {
                     String username = document.getString("username");
                     textViewProfileUsername.setText(username != null ? username : "Username not available");
                 } else {
-                    textViewProfileUsername.setText("User document does not exist");
+                    Toast.makeText(getActivity(), "Username document does not exist", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getActivity(), "Failed to load username", Toast.LENGTH_SHORT).show();
