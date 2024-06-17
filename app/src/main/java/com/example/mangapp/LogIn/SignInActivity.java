@@ -217,7 +217,7 @@ public class SignInActivity extends AppCompatActivity implements SignUpFragment.
                         Log.d(TAG,"signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
                         addUserToDb(Objects.requireNonNull(user));
-                        SignUpFragment.saveUserData(firestore, this, user.getUid(), user.getEmail(), user.getEmail());
+                        if(!databaseManager.userExists(user.getUid()))SignUpFragment.saveUserData(firestore, this, user.getUid(), user.getEmail(), user.getEmail());
                         updateUI(Objects.requireNonNull(user));
                     }else{
                         Log.e(TAG,"signInWithCredential:failure",task.getException());
